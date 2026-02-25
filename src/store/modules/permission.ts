@@ -98,6 +98,7 @@ function filterChildren(menus?: SysMenu[], lateMenu: any = false, type: boolean 
                         visiable: menu.visible,
                         permission: menu.permission,
                         icon: menu.icon,
+                        hidden: false
                     },
                 });
             }

@@ -25,8 +25,8 @@ const useUserStore = defineStore('user', {
     }),
     actions: {
         // 登录
-        login(userInfo: { username: string; password: string; code: string; uuid?: string }) {
-            const username = userInfo.username.trim();
+        login(userInfo: { username: string; password: string; code?: string; uuid?: string }) {
+            const username = userInfo.username;
             const password = userInfo.password;
             const code = userInfo.code;
             const uuid = userInfo.uuid;

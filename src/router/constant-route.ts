@@ -56,6 +56,9 @@ export const constantRoutes: RouteRecordRaw[] = [
                 meta: { title: '首页', icon: 'dashboard', affix: true },
             },
         ],
+        meta: {
+            hidden: true,
+        },
     },
     {
         path: '/user',
