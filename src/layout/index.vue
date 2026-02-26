@@ -59,7 +59,7 @@ function handleClickOutside(): void {
     useAppStore().closeSideBar({ withoutAnimation: false });
 }
 
-const settingRef = ref(null);
+const settingRef = ref();
 function setLayout() {
     settingRef.value.openSetting();
 }

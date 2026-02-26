@@ -105,7 +105,6 @@ const redirect = ref<string | undefined>(undefined);
 // );
 
 function handleLogin(): void {
-    console.log(route);
     loginRef.value.validate((valid: boolean) => {
         if (valid) {
             loading.value = true;
