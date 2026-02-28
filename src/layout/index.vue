@@ -8,7 +8,7 @@
                 <tags-view v-if="needTagsView" />
             </div>
             <app-main />
-            <settings ref="settingRef" />
+            <!-- <settings ref="settingRef" /> -->
         </div>
     </div>
 </template>

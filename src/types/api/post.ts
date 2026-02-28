@@ -1,4 +1,4 @@
-import type { PageDomain, BaseEntity } from "../common";
+import type { PageDomain, BaseEntity } from "./common";
 
 /** 岗位分页查询参数 */
 export interface PostQueryParams extends PageDomain {

@@ -1,4 +1,4 @@
-import type { PageDomain, BaseEntity, AjaxResult, TreeSelect } from "../common";
+import type { PageDomain, BaseEntity, AjaxResult, TreeSelect } from "./common";
 
 /** 角色分页查询参数 */
 export interface RoleQueryParams extends PageDomain {

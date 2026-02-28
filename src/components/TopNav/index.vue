@@ -37,7 +37,7 @@ import { constantRoutes } from "@/router"
 import { isHttp } from '@/utils/validate'
 import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
-import usePermissionStore from '@/store/modules/permission'
+import usePermissionStore from '@/store/modules/route'
 
 // 顶部栏初始数
 const visibleNumber = ref<number | null>(null)

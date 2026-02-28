@@ -15,7 +15,7 @@
 import SidebarItem from '../Sidebar/SidebarItem.vue'
 import useAppStore from '@/store/modules/app'
 import useSettingsStore from '@/store/modules/settings'
-import usePermissionStore from '@/store/modules/permission'
+import usePermissionStore from '@/store/modules/route'
 
 const route = useRoute()
 const appStore = useAppStore()

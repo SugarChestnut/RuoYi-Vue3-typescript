@@ -15,7 +15,7 @@
 <script setup lang="ts">
 import copyright from './Copyright/index.vue';
 import iframeToggle from './IframeToggle/index.vue';
-import useTagsViewStore from '@/store/modules/tagsView';
+import useTagsViewStore from '@/store/modules/tags';
 
 const route = useRoute();
 const tagsViewStore = useTagsViewStore();

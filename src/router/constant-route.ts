@@ -5,6 +5,7 @@ import type { RouteRecordRaw } from 'vue-router';
 export const constantRoutes: RouteRecordRaw[] = [
     {
         path: '/login',
+        name: 'Login',
         component: () => import('@/views/login.vue'),
         meta: {
             hidden: true,
@@ -12,6 +13,7 @@ export const constantRoutes: RouteRecordRaw[] = [
     },
     {
         path: '/401',
+        name: '401',
         component: () => import('@/views/error/401.vue'),
         meta: {
             hidden: true,
@@ -22,6 +24,7 @@ export const constantRoutes: RouteRecordRaw[] = [
      */
     {
         path: '/:pathMatch(.*)*',
+        name: '404',
         component: () => import('@/views/error/404.vue'),
         meta: {
             hidden: true,
@@ -32,14 +35,15 @@ export const constantRoutes: RouteRecordRaw[] = [
      */
     {
         path: '',
+        name: 'Root',
         component: Layout,
         redirect: '/index',
         children: [
             {
                 path: '/index',
-                component: () => import('@/views/index.vue'),
                 name: 'Index',
-                meta: { title: '首页', icon: 'dashboard', affix: true },
+                component: () => import('@/views/index.vue'),
+                meta: { menuName: '首页1', icon: 'dashboard', affix: true },
             },
         ],
         meta: {
@@ -48,31 +52,38 @@ export const constantRoutes: RouteRecordRaw[] = [
     },
     {
         path: '/redirect',
+        name: 'Redirect',
         component: Layout,
         children: [
             {
                 path: '/redirect/:path(.*)',
                 component: () => import('@/views/redirect/index.vue'),
+                meta: {
+                    hidden: true,
+                },
             },
         ],
         meta: {
             hidden: true,
         },
     },
-    {
-        path: '/user',
-        component: Layout,
-        meta: {
-            hidden: true,
-        },
-        redirect: 'noredirect',
-        children: [
-            {
-                path: 'profile/:activeTab?',
-                component: () => import('@/views/system/user/profile/index.vue'),
-                name: 'Profile',
-                meta: { title: '个人中心', icon: 'user' },
-            },
-        ],
-    },
+    // {
+    //     path: '/user',
+    //     component: Layout,
+    //     meta: {
+    //         hidden: true,
+    //     },
+    //     redirect: 'noredirect',
+    //     children: [
+    //         {
+    //             path: 'profile/:activeTab?',
+    //             component: () => import('@/views/system/user/profile/index.vue'),
+    //             name: 'Profile',
+    //             meta: {
+    //                 menuName: '个人中心',
+    //                 icon: 'user',
+    //             },
+    //         },
+    //     ],
+    // },
 ];

@@ -11,7 +11,7 @@ import { isHttp } from '@/utils/validate';
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob('./../../views/**/*.vue');
 
-const usePermissionStore = defineStore('permission', {
+const useRouteStore = defineStore('route', {
     state: () => ({
         routes: [] as RouteRecordRaw[],
         addRoutes: [] as RouteRecordRaw[],
@@ -25,7 +25,7 @@ const usePermissionStore = defineStore('permission', {
             this.routes = constantRoutes.concat(routes);
         },
         setDefaultRoutes(routes: RouteRecordRaw[]) {
-            this.defaultRoutes = constantRoutes.concat(routes);
+            this.defaultRoutes = constantRoutes;
         },
         setTopbarRoutes(routes: RouteRecordRaw[]) {
             this.topbarRouters = routes;
@@ -38,17 +38,18 @@ const usePermissionStore = defineStore('permission', {
                 // 向后端请求路由数据
                 getRouters().then((res) => {
                     if (res.flag) {
-                        this.setSidebarRouters(filterChildren(res.data));
+                        this.setSidebarRouters(filterChildren(res.data, true));
                         this.setDefaultRoutes(filterChildren(res.data));
                         this.setTopbarRoutes(filterChildren(res.data));
                         addDynamicRoute(dynamicRoutes);
-                        const rewriteRoutes = filterChildren(res.data, false, true);
+                        const rewriteRoutes = filterChildren(res.data);
                         this.setRoutes(rewriteRoutes);
                         rewriteRoutes.forEach((route: any) => {
                             if (!isHttp(route.path)) {
                                 router.addRoute(route); // 动态添加可访问路由表
                             }
                         });
+                        console.log(router.getRoutes());
                         resolve();
                     } else {
                         reject(res.msg);
@@ -60,14 +61,14 @@ const usePermissionStore = defineStore('permission', {
 });
 
 // 将组件为 ParentView 的子组件提级，移除当前组件
-function filterChildren(menus?: SysMenu[], lateMenu: any = false, type: boolean = false): RouteRecordRaw[] {
+function filterChildren(menus?: SysMenu[], type: boolean = false, lateMenu: any = false): RouteRecordRaw[] {
     var routes: RouteRecordRaw[] = [];
     if (menus && menus.length) {
         menus.forEach((menu) => {
-            // if (type) {
-            //     menu.path = lateMenu ? lateMenu.path + '/' + menu.path : menu.path;
-            // }
-            const childrenRoute = filterChildren(menu.children, menu, type);
+            if (type) {
+                menu.path = lateMenu ? lateMenu.path + '/' + menu.path : menu.path;
+            }
+            const childrenRoute = filterChildren(menu.children, type, menu);
             if (type && menu.component === 'ParentView' && childrenRoute && childrenRoute.length) {
                 routes.concat(childrenRoute);
             } else {
@@ -88,17 +89,16 @@ function filterChildren(menus?: SysMenu[], lateMenu: any = false, type: boolean 
                     name: menu.routeName,
                     path: menu.path || '',
                     component: component,
-                    redirect: 'noredirect',
                     children: childrenRoute,
                     meta: {
                         menuName: menu.menuName,
                         query: menu.query,
                         isFrame: menu.isFrame,
                         isCahce: menu.isCache,
-                        visiable: menu.visible,
+                        hiddern: menu.visible,
                         permission: menu.permission,
                         icon: menu.icon,
-                        hidden: false
+                        hidden: false,
                     },
                 });
             }
@@ -130,4 +130,4 @@ export const loadView = (view: string): any => {
     return res;
 };
 
-export default usePermissionStore;
+export default useRouteStore;

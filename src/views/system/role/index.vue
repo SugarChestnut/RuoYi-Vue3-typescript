@@ -244,10 +244,10 @@
 <script setup lang="ts" name="Role">
 import { addRole, changeRoleStatus, dataScope, delRole, getRole, listRole, updateRole, deptTreeSelect } from "@/api/system/role"
 import { roleMenuTreeselect, treeselect as menuTreeselect } from "@/api/system/menu"
-import type { SysRole, RoleQueryParams } from '@/types/api/system/role'
+import type { SysRole, RoleQueryParams } from '@/types/api/role'
 import type { TreeSelect } from '@/types/api/common'
-import type { RoleDeptTreeResult } from '@/types/api/system/role'
-import type { RoleMenuTreeselectResult } from '@/types/api/system/menu'
+import type { RoleDeptTreeResult } from '@/types/api/role'
+import type { RoleMenuTreeselectResult } from '@/types/api/menu'
 
 const router = useRouter()
 const { proxy } = getCurrentInstance()

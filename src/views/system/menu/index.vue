@@ -326,7 +326,7 @@
 import { createMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';
-import type { SysMenu, MenuQueryParams } from '@/types/api/system/menu';
+import type { SysMenu, MenuQueryParams } from '@/types/api/menu';
 
 const { proxy } = getCurrentInstance();
 const { sys_show_hide, sys_normal_disable } = proxy.useDict('sys_show_hide', 'sys_normal_disable');

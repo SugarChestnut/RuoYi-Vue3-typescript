@@ -182,7 +182,7 @@
 <script setup lang="ts" name="Dict">
 import useDictStore from '@/store/modules/dict'
 import { listType, getType, delType, addType, updateType, refreshCache } from "@/api/system/dict/type"
-import type { SysDictType, DictTypeQueryParams } from '@/types/api/system/dict'
+import type { SysDictType, DictTypeQueryParams } from '@/types/api/dict'
 
 const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = proxy.useDict("sys_normal_disable")

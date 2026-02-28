@@ -179,7 +179,7 @@
 import useDictStore from '@/store/modules/dict'
 import { optionselect as getDictOptionselect, getType } from "@/api/system/dict/type"
 import { listData, getData, delData, addData, updateData } from "@/api/system/dict/data"
-import type { SysDictData, SysDictType, DictDataQueryParams } from '@/types/api/system/dict'
+import type { SysDictData, SysDictType, DictDataQueryParams } from '@/types/api/dict'
 
 interface ListClassOption {
   value: string

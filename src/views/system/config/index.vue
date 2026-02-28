@@ -165,7 +165,7 @@
 </template>
 
 <script setup lang="ts" name="Config">
-import type { SysConfig, ConfigQueryParams } from '@/types/api/system/config'
+import type { SysConfig, ConfigQueryParams } from '@/types/api/config'
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from "@/api/system/config"
 
 const { proxy } = getCurrentInstance()

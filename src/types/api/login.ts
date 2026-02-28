@@ -1,4 +1,4 @@
-import type { SysUser } from './system/user';
+import type { SysUser } from './user';
 
 // 登录响应
 export interface LoginInfoResult {

@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { updateUserProfile } from "@/api/system/user"
-import type { SysUser } from '@/types/api/system/user'
+import type { SysUser } from '@/types/api/user'
 
 interface Props {
   user?: SysUser

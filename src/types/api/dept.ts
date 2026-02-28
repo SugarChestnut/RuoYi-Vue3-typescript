@@ -1,4 +1,4 @@
-import type { BaseEntity } from "../common";
+import type { BaseEntity } from "./common";
 
 /** 部门查询参数 */
 export interface DeptQueryParams {

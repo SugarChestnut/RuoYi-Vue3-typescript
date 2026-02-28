@@ -146,7 +146,7 @@
 
 <script setup lang="ts" name="Post">
 import { listPost, addPost, delPost, getPost, updatePost } from "@/api/system/post"
-import type { SysPost, PostQueryParams } from '@/types/api/system/post'
+import type { SysPost, PostQueryParams } from '@/types/api/post'
 
 const { proxy } = getCurrentInstance()
 const { sys_normal_disable } = proxy.useDict("sys_normal_disable")

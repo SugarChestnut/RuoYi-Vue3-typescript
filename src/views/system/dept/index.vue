@@ -142,7 +142,7 @@
 
 <script setup lang="ts" name="Dept">
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from "@/api/system/dept"
-import type { SysDept, DeptQueryParams } from '@/types/api/system/dept'
+import type { SysDept, DeptQueryParams } from '@/types/api/dept'
 import type { TreeSelect } from '@/types/api/common'
 
 const { proxy } = getCurrentInstance()

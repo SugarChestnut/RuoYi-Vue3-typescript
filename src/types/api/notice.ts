@@ -1,4 +1,4 @@
-import type { PageDomain, BaseEntity } from "../common";
+import type { PageDomain, BaseEntity } from "./common";
 
 /** 通知公告分页查询参数 */
 export interface NoticeQueryParams extends PageDomain  {

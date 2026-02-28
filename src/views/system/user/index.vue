@@ -219,9 +219,9 @@ import useAppStore from '@/store/modules/app'
 import { changeUserStatus, listUser, resetUserPwd, delUser, getUser, updateUser, addUser, deptTreeSelect } from "@/api/system/user"
 import { Splitpanes, Pane } from "splitpanes"
 import "splitpanes/dist/splitpanes.css"
-import type { SysUser, UserQueryParams, UserFormDataResult } from '@/types/api/system/user'
-import type { SysRole } from '@/types/api/system/role'
-import type { SysPost } from '@/types/api/system/post'
+import type { SysUser, UserQueryParams, UserFormDataResult } from '@/types/api/user'
+import type { SysRole } from '@/types/api/role'
+import type { SysPost } from '@/types/api/post'
 import type { TreeSelect, TableShowColumns, AjaxResult } from '@/types/api/common'
 
 const router = useRouter()

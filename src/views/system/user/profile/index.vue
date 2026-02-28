@@ -67,7 +67,7 @@ import userAvatar from "./userAvatar.vue"
 import userInfo from "./userInfo.vue"
 import resetPwd from "./resetPwd.vue"
 import { getUserProfile } from "@/api/system/user"
-import type { SysUser } from '@/types/api/system/user'
+import type { SysUser } from '@/types/api/user'
 
 const route = useRoute()
 const selectedTab = ref<string>("userinfo")

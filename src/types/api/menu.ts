@@ -1,5 +1,5 @@
 import type { DefineComponent } from 'vue';
-import type { BaseEntity, Result, TreeSelect } from '../common';
+import type { BaseEntity, Result, TreeSelect } from './common';
 
 /** 菜单查询参数 */
 export interface MenuQueryParams {

@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import usePermissionStore from '@/store/modules/permission'
+import usePermissionStore from '@/store/modules/route'
 
 const route = useRoute()
 const router = useRouter()

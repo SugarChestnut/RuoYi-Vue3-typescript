@@ -1,7 +1,7 @@
 import type { SysRole } from './role';
 import type { SysDept } from './dept';
 import type { SysPost } from './post';
-import type { PageDomain, Result, BaseEntity } from '../common';
+import type { PageDomain, Result, BaseEntity } from './common';
 
 /** 用户分页查询参数 */
 export interface UserQueryParams extends PageDomain {

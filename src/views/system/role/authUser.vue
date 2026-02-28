@@ -94,7 +94,7 @@
 <script setup lang="ts" name="AuthUser">
 import selectUser from "./selectUser.vue"
 import { allocatedUserList, authUserCancel, authUserCancelAll } from "@/api/system/role"
-import type { SysUser, AuthUserQueryParams } from '@/types/api/system/user'
+import type { SysUser, AuthUserQueryParams } from '@/types/api/user'
 
 const route = useRoute()
 const { proxy } = getCurrentInstance()

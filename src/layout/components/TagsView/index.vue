@@ -6,7 +6,7 @@
                 :key="tag.path"
                 :data-path="tag.path"
                 :class="{ active: isActive(tag), 'has-icon': tagsIcon }"
-                :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
+                :to="{ path: tag.path, query: tag.meta.query, fullPath: tag.fullPath }"
                 class="tags-view-item"
                 :style="activeStyle(tag)"
                 @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
@@ -37,10 +37,10 @@
 
 <script setup lang="ts">
 import ScrollPane from './ScrollPane.vue';
-import { getNormalPath } from '@/utils/ruoyi';
-import useTagsViewStore from '@/store/modules/tagsView';
+import useTagsStore from '@/store/modules/tags';
 import useSettingsStore from '@/store/modules/settings';
-import usePermissionStore from '@/store/modules/permission';
+import useRouteStore from '@/store/modules/route';
+import type { Tag } from '@/types';
 
 const visible = ref<boolean>(false);
 const top = ref<number>(0);
@@ -53,8 +53,8 @@ const { proxy } = getCurrentInstance();
 const route = useRoute();
 const router = useRouter();
 
-const visitedViews = computed(() => useTagsViewStore().visitedViews);
-const routes = computed(() => usePermissionStore().routes);
+const visitedViews = computed(() => useTagsStore().visitedTags);
+const routes = computed(() => useRouteStore().sidebarRouters);
 const theme = computed(() => useSettingsStore().theme);
 const tagsIcon = computed(() => useSettingsStore().tagsIcon);
 
@@ -108,20 +108,18 @@ function isLastView(): boolean {
     }
 }
 
-function filterAffixTags(routes: any[], basePath = ''): any[] {
-    const tags: any[] = [];
+function filterAffixTags(routes: any[]): any[] {
+    const tags: Tag[] = [];
     routes.forEach((route) => {
         if (route.meta && route.meta.affix) {
-            const tagPath = getNormalPath(basePath + '/' + route.path);
             tags.push({
-                fullPath: tagPath,
-                path: tagPath,
-                name: route.name,
+                path: route.path,
+                name: route.meta.menuName || 'no-name',
                 meta: { ...route.meta },
             });
         }
         if (route.children) {
-            const tempTags = filterAffixTags(route.children, route.path);
+            const tempTags = filterAffixTags(route.children);
             if (tempTags.length >= 1) {
                 tags.push(...tempTags);
             }
@@ -136,7 +134,7 @@ function initTags(): void {
     for (const tag of res) {
         // Must have tag name
         if (tag.name) {
-            useTagsViewStore().addVisitedView(tag);
+            useTagsStore().addVisitedTag(tag);
         }
     }
 }
@@ -144,7 +142,7 @@ function initTags(): void {
 function addTags(): void {
     const { name } = route;
     if (name) {
-        useTagsViewStore().addView(route);
+        // useTagsStore().addTag({name: route});
     }
 }
 

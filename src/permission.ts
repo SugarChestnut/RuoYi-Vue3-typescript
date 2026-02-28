@@ -7,7 +7,7 @@ import { isHttp, isPathMatch } from '@/utils/validate';
 import { isRelogin } from '@/utils/request';
 import useUserStore from '@/store/modules/user';
 import useSettingsStore from '@/store/modules/settings';
-import usePermissionStore from '@/store/modules/permission';
+import useRouteStore from '@/store/modules/route';
 
 NProgress.configure({ showSpinner: false });
 
@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
                             next('/error?msg=当前用户未分配权限，请联系管理员');
                         } else {
                             isRelogin.show = false;
-                            usePermissionStore()
+                            useRouteStore()
                                 .generateRoutes()
                                 .then(() => {
                                     next({ ...to, replace: true }); // hack方法 确保addRoutes已完成
