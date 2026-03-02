@@ -6,7 +6,7 @@
                 :key="tag.path"
                 :data-path="tag.path"
                 :class="{ active: isActive(tag), 'has-icon': tagsIcon }"
-                :to="{ path: tag.path, query: tag.meta.query, fullPath: tag.fullPath }"
+                :to="{ path: tag.path, query: tag.meta.query }"
                 class="tags-view-item"
                 :style="activeStyle(tag)"
                 @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
@@ -16,7 +16,7 @@
                     v-if="tagsIcon && tag.meta && tag.meta.icon && tag.meta.icon !== '#'"
                     :icon-class="tag.meta.icon"
                 />
-                {{ tag.title }}
+                {{ tag.name }}
                 <span v-if="!isAffix(tag)" @click.prevent.stop="closeSelectedTag(tag)">
                     <close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: middle" />
                 </span>
@@ -41,15 +41,14 @@ import useTagsStore from '@/store/modules/tags';
 import useSettingsStore from '@/store/modules/settings';
 import useRouteStore from '@/store/modules/route';
 import type { Tag } from '@/types';
+import tab from '@/plugins/tab'
 
 const visible = ref<boolean>(false);
 const top = ref<number>(0);
 const left = ref<number>(0);
 const selectedTag = ref<any>({});
 const affixTags = ref<any[]>([]);
-const scrollPaneRef = ref<any>(null);
-
-const { proxy } = getCurrentInstance();
+const scrollPaneRef = ref();
 const route = useRoute();
 const router = useRouter();
 
@@ -132,10 +131,7 @@ function initTags(): void {
     const res = filterAffixTags(routes.value);
     affixTags.value = res;
     for (const tag of res) {
-        // Must have tag name
-        if (tag.name) {
-            useTagsStore().addVisitedTag(tag);
-        }
+        useTagsStore().addVisitedTag(tag);
     }
 }
 
@@ -150,25 +146,21 @@ function moveToCurrentTag(): void {
     nextTick(() => {
         for (const r of visitedViews.value) {
             if (r.path === route.path) {
-                scrollPaneRef.value?.moveToTarget(r);
-                // when query is different then update
-                if (r.fullPath !== route.fullPath) {
-                    useTagsViewStore().updateVisitedView(route);
-                }
+                scrollPaneRef.value.moveToTarget(r);
             }
         }
     });
 }
 
 function refreshSelectedTag(view: any): void {
-    proxy.$tab.refreshPage(view);
+    tab.refreshPage(view);
     if (route.meta.link) {
-        useTagsViewStore().delIframeView(route);
+        useTagsStore().delIframeTag(route);
     }
 }
 
 function closeSelectedTag(view: any): void {
-    proxy.$tab.closePage(view).then(({ visitedViews }: any) => {
+    tab.closePage(view).then(({ visitedViews }: any) => {
         if (isActive(view)) {
             toLastView(visitedViews, view);
         }
@@ -176,7 +168,7 @@ function closeSelectedTag(view: any): void {
 }
 
 function closeRightTags(): void {
-    proxy.$tab.closeRightPage(selectedTag.value).then((visitedViews: any) => {
+    tab.closeRightPage(selectedTag.value).then((visitedViews: any) => {
         if (!visitedViews.find((i: any) => i.fullPath === route.fullPath)) {
             toLastView(visitedViews);
         }
@@ -184,7 +176,7 @@ function closeRightTags(): void {
 }
 
 function closeLeftTags(): void {
-    proxy.$tab.closeLeftPage(selectedTag.value).then((visitedViews: any) => {
+    tab.closeLeftPage(selectedTag.value).then((visitedViews: any) => {
         if (!visitedViews.find((i: any) => i.fullPath === route.fullPath)) {
             toLastView(visitedViews);
         }
@@ -193,13 +185,13 @@ function closeLeftTags(): void {
 
 function closeOthersTags(): void {
     router.push(selectedTag.value).catch(() => {});
-    proxy.$tab.closeOtherPage(selectedTag.value).then(() => {
+    tab.closeOtherPage(selectedTag.value).then(() => {
         moveToCurrentTag();
     });
 }
 
 function closeAllTags(view: any): void {
-    proxy.$tab.closeAllPage().then(({ visitedViews }: any) => {
+    tab.closeAllPage().then(({ visitedViews }: any) => {
         if (affixTags.value.some((tag: any) => tag.path === route.path)) {
             return;
         }
@@ -230,12 +222,7 @@ function openMenu(tag: any, e: MouseEvent): void {
     const maxLeft = offsetWidth - menuMinWidth; // left boundary
     const l = e.clientX - offsetLeft + 15; // 15: margin right
 
-    if (l > maxLeft) {
-        left.value = maxLeft;
-    } else {
-        left.value = l;
-    }
-
+    left.value = l > maxLeft ? maxLeft : l;
     top.value = e.clientY;
     visible.value = true;
     selectedTag.value = tag;

@@ -24,11 +24,7 @@ const useTagsStore = defineStore('tags', {
 
         addVisitedTag(tag: Tag) {
             if (this.visitedTags.some((v) => v.path === tag.path)) return;
-            this.visitedTags.push(
-                Object.assign({}, tag, {
-                    title: tag.meta?.title || 'no-name',
-                }),
-            );
+            this.visitedTags.push(tag);
         },
 
         addCachedTag(tag: any) {
@@ -135,15 +131,6 @@ const useTagsStore = defineStore('tags', {
                 this.cachedTags = [];
                 resolve([...this.cachedTags]);
             });
-        },
-
-        updateVisitedTag(tag: any) {
-            for (let v of this.visitedTags) {
-                if (v.path === tag.path) {
-                    v = Object.assign(v, tag);
-                    break;
-                }
-            }
         },
 
         delRightTags(tag: any) {
