@@ -11,6 +11,7 @@
                 :style="activeStyle(tag)"
                 @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
                 @contextmenu.prevent="openMenu(tag, $event)"
+                ref="tags"
             >
                 <svg-icon
                     v-if="tagsIcon && tag.meta && tag.meta.icon && tag.meta.icon !== '#'"
@@ -36,12 +37,15 @@
 </template>
 
 <script setup lang="ts">
+import { useTemplateRef } from 'vue';
 import ScrollPane from './ScrollPane.vue';
 import useTagsStore from '@/store/modules/tags';
 import useSettingsStore from '@/store/modules/settings';
 import useRouteStore from '@/store/modules/route';
 import type { Tag } from '@/types';
-import tab from '@/plugins/tab'
+import tab from '@/plugins/tab';
+
+const tagsRef = useTemplateRef('tags');
 
 const visible = ref<boolean>(false);
 const top = ref<number>(0);
@@ -216,14 +220,17 @@ function toLastView(visitedViews: any[], view?: any): void {
 }
 
 function openMenu(tag: any, e: MouseEvent): void {
-    const menuMinWidth = 105;
-    const offsetLeft = proxy.$el.getBoundingClientRect().left; // container margin left
-    const offsetWidth = proxy.$el.offsetWidth; // container width
-    const maxLeft = offsetWidth - menuMinWidth; // left boundary
-    const l = e.clientX - offsetLeft + 15; // 15: margin right
-
-    left.value = l > maxLeft ? maxLeft : l;
-    top.value = e.clientY;
+    console.log(tagsRef)
+    for (const item of tagsRef.value || []) {
+        console.log(item);
+    }
+    // const offsetLeft = el!.getBoundingClientRect().left; // container margin left
+    // const offsetWidth = el!.offsetWidth; // container width
+    // const maxLeft = offsetWidth - menuMinWidth; // left boundary
+    // const l = e.clientX - offsetLeft + 15; // 15: margin right
+    const { clientX, clientY } = e;
+    left.value = clientX + 15; // 15: margin right
+    top.value = clientY;
     visible.value = true;
     selectedTag.value = tag;
 }
