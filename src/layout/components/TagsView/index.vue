@@ -11,7 +11,11 @@
                 :style="activeStyle(tag)"
                 @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
                 @contextmenu.prevent="openMenu(tag, $event)"
-                ref="tags"
+                :ref="
+                    (el) => {
+                        if (el) tagsRefs[tag.path] = el;
+                    }
+                "
             >
                 <svg-icon
                     v-if="tagsIcon && tag.meta && tag.meta.icon && tag.meta.icon !== '#'"
@@ -23,6 +27,7 @@
                 </span>
             </router-link>
         </scroll-pane>
+
         <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
             <li @click="refreshSelectedTag(selectedTag)"><refresh-right style="width: 1em; height: 1em" /> 刷新页面</li>
             <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
@@ -45,8 +50,7 @@ import useRouteStore from '@/store/modules/route';
 import type { Tag } from '@/types';
 import tab from '@/plugins/tab';
 
-const tagsRef = useTemplateRef('tags');
-
+const tagsRefs = ref<any>({});
 const visible = ref<boolean>(false);
 const top = ref<number>(0);
 const left = ref<number>(0);
@@ -220,17 +224,21 @@ function toLastView(visitedViews: any[], view?: any): void {
 }
 
 function openMenu(tag: any, e: MouseEvent): void {
-    console.log(tagsRef)
-    for (const item of tagsRef.value || []) {
-        console.log(item);
+    const el = tagsRefs.value[tag.path].$el;
+    const menuMinWidth = 105;
+    const offsetLeft = el.getBoundingClientRect().left; // container margin left
+    console.log(offsetLeft);
+    const offsetWidth = el.offsetWidth; // container width
+    console.log(offsetWidth);
+    console.log(e.clientX);
+    const maxLeft = offsetWidth - menuMinWidth; // left boundary
+    const l = offsetLeft + 15; // 15: margin right
+    if (l > maxLeft) {
+        left.value = maxLeft;
+    } else {
+        left.value = l;
     }
-    // const offsetLeft = el!.getBoundingClientRect().left; // container margin left
-    // const offsetWidth = el!.offsetWidth; // container width
-    // const maxLeft = offsetWidth - menuMinWidth; // left boundary
-    // const l = e.clientX - offsetLeft + 15; // 15: margin right
-    const { clientX, clientY } = e;
-    left.value = clientX + 15; // 15: margin right
-    top.value = clientY;
+    top.value = e.clientY;
     visible.value = true;
     selectedTag.value = tag;
 }
