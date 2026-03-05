@@ -42,6 +42,7 @@ router.beforeEach((to, from, next) => {
                             useRouteStore()
                                 .generateRoutes()
                                 .then(() => {
+                                    console.log(router.getRoutes());
                                     next({ ...to, replace: true }); // hack方法 确保addRoutes已完成
                                 });
                         }

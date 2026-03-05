@@ -49,7 +49,6 @@ const useRouteStore = defineStore('route', {
                                 router.addRoute(route); // 动态添加可访问路由表
                             }
                         });
-                        console.log(router.getRoutes());
                         resolve();
                     } else {
                         reject(res.msg);

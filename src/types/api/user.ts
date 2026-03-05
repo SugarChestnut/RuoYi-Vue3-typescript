@@ -46,6 +46,8 @@ export interface SysUser extends BaseEntity {
     roles?: SysRole[];
     /** 角色组 */
     roleIds?: number[];
+    /** 部门ID */
+    deptId?: number;
 }
 
 /** 注册信息 */

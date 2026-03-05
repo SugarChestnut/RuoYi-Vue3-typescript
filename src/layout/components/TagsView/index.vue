@@ -42,7 +42,6 @@
 </template>
 
 <script setup lang="ts">
-import { useTemplateRef } from 'vue';
 import ScrollPane from './ScrollPane.vue';
 import useTagsStore from '@/store/modules/tags';
 import useSettingsStore from '@/store/modules/settings';
@@ -101,7 +100,7 @@ function isAffix(tag: any): boolean {
 
 function isFirstView(): boolean {
     try {
-        return selectedTag.value.fullPath === '/index' || selectedTag.value.fullPath === visitedViews.value[1].fullPath;
+        return selectedTag.value.path === '/index' || selectedTag.value.path === visitedViews.value[1].path;
     } catch (err) {
         return false;
     }
@@ -109,7 +108,7 @@ function isFirstView(): boolean {
 
 function isLastView(): boolean {
     try {
-        return selectedTag.value.fullPath === visitedViews.value[visitedViews.value.length - 1].fullPath;
+        return selectedTag.value.path === visitedViews.value[visitedViews.value.length - 1].path;
     } catch (err) {
         return false;
     }
@@ -225,20 +224,16 @@ function toLastView(visitedViews: any[], view?: any): void {
 
 function openMenu(tag: any, e: MouseEvent): void {
     const el = tagsRefs.value[tag.path].$el;
-    const menuMinWidth = 105;
+    
     const offsetLeft = el.getBoundingClientRect().left; // container margin left
-    console.log(offsetLeft);
-    const offsetWidth = el.offsetWidth; // container width
-    console.log(offsetWidth);
-    console.log(e.clientX);
-    const maxLeft = offsetWidth - menuMinWidth; // left boundary
     const l = offsetLeft + 15; // 15: margin right
-    if (l > maxLeft) {
-        left.value = maxLeft;
-    } else {
-        left.value = l;
-    }
-    top.value = e.clientY;
+
+    const menuMinWidth = 0;
+    const maxLeft = el.offsetWidth - menuMinWidth; // left boundary
+
+    console.log(l, maxLeft);
+    left.value = Math.min(l, maxLeft);
+    top.value = e.clientY + 3;
     visible.value = true;
     selectedTag.value = tag;
 }
