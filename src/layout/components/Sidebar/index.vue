@@ -1,4 +1,3 @@
-d
 <template>
     <div :class="{ 'has-logo': showLogo }" class="sidebar-container">
         <logo v-if="showLogo" :collapse="isCollapse" />

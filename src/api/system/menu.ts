@@ -2,11 +2,11 @@ import request from '@/utils/request';
 import type { MenuQueryParams, SysMenu, TreeSelect, Result, RoleMenuTreeselectResult } from '@/types';
 
 // 查询菜单列表
-export function listMenu(query?: MenuQueryParams): Promise<Result<SysMenu[]>> {
+export function listMenu(query: MenuQueryParams): Promise<Result<SysMenu[]>> {
     return request({
         url: '/system/menu/list',
-        method: 'get',
-        params: query,
+        method: 'post',
+        data: query,
     });
 }
 
@@ -37,7 +37,7 @@ export function roleMenuTreeselect(roleId: number): Promise<RoleMenuTreeselectRe
 // 新增菜单
 export function createMenu(data: SysMenu): Promise<Result> {
     return request({
-        url: '/system/menu',
+        url: '/system/menu/create',
         method: 'post',
         data: data,
     });
@@ -46,8 +46,8 @@ export function createMenu(data: SysMenu): Promise<Result> {
 // 修改菜单
 export function updateMenu(data: SysMenu): Promise<Result> {
     return request({
-        url: '/system/menu',
-        method: 'put',
+        url: '/system/menu/update',
+        method: 'post',
         data: data,
     });
 }
@@ -55,7 +55,7 @@ export function updateMenu(data: SysMenu): Promise<Result> {
 // 删除菜单
 export function delMenu(menuId: number): Promise<Result> {
     return request({
-        url: '/system/menu/' + menuId,
-        method: 'delete',
+        url: '/system/menu/delete/' + menuId,
+        method: 'post',
     });
 }

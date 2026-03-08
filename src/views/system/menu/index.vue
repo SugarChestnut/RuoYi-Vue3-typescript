@@ -28,7 +28,7 @@
 
         <el-row :gutter="10" class="mb8">
             <el-col :span="1.5">
-                <el-button type="primary" plain icon="Plus" @click="handleAdd(undefined)" v-hasPermi="[]">
+                <el-button type="primary" plain icon="Plus" @click="handleAdd()" v-hasPermi="[]">
                     新增
                 </el-button>
             </el-col>
@@ -79,14 +79,6 @@
                     <el-button
                         link
                         type="primary"
-                        icon="Plus"
-                        @click="handleAdd(scope.row)"
-                        v-hasPermi="['system:menu:add']"
-                        >新增</el-button
-                    >
-                    <el-button
-                        link
-                        type="primary"
                         icon="Delete"
                         @click="handleDelete(scope.row)"
                         v-hasPermi="['system:menu:remove']"
@@ -121,6 +113,11 @@
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="菜单名称" prop="title">
+                            <el-input v-model="form.title" placeholder="请输入菜单名称" />
+                        </el-form-item>
+                    </el-col>
                     <el-col :span="12" v-if="form.menuType != 'F'">
                         <el-form-item label="菜单图标" prop="icon">
                             <el-popover placement="bottom-start" :width="540" trigger="click">
@@ -146,16 +143,6 @@
                             </el-popover>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="显示排序" prop="orderNum">
-                            <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-form-item label="菜单名称" prop="title">
-                            <el-input v-model="form.title" placeholder="请输入菜单名称" />
-                        </el-form-item>
-                    </el-col>
                     <el-col :span="12" v-if="form.menuType == 'C'">
                         <el-form-item prop="routeName">
                             <template #label>
@@ -170,21 +157,6 @@
                                 </span>
                             </template>
                             <el-input v-model="form.routeName" placeholder="请输入路由名称" />
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="12" v-if="form.menuType != 'F'">
-                        <el-form-item>
-                            <template #label>
-                                <span>
-                                    <el-tooltip content="选择是外链则路由地址需要以`http(s)://`开头" placement="top">
-                                        <el-icon><question-filled /></el-icon> </el-tooltip
-                                    >是否外链
-                                </span>
-                            </template>
-                            <el-radio-group v-model="form.isFrame">
-                                <el-radio value="0">是</el-radio>
-                                <el-radio value="1">否</el-radio>
-                            </el-radio-group>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12" v-if="form.menuType != 'F'">
@@ -251,6 +223,26 @@
                             </template>
                         </el-form-item>
                     </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="显示排序" prop="orderNum">
+                            <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12" v-if="form.menuType != 'F'">
+                        <el-form-item>
+                            <template #label>
+                                <span>
+                                    <el-tooltip content="选择是外链则路由地址需要以`http(s)://`开头" placement="top">
+                                        <el-icon><question-filled /></el-icon> </el-tooltip
+                                    > 是否外链
+                                </span>
+                            </template>
+                            <el-radio-group v-model="form.isFrame">
+                                <el-radio value="0">是</el-radio>
+                                <el-radio value="1">否</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-col>
                     <el-col :span="12" v-if="form.menuType == 'C'">
                         <el-form-item>
                             <template #label>
@@ -265,8 +257,8 @@
                                 </span>
                             </template>
                             <el-radio-group v-model="form.isCache">
-                                <el-radio value="0">缓存</el-radio>
-                                <el-radio value="1">不缓存</el-radio>
+                                <el-radio value=true>缓存</el-radio>
+                                <el-radio value=false>不缓存</el-radio>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
@@ -283,14 +275,13 @@
                                     显示状态
                                 </span>
                             </template>
-                            <!-- <el-radio-group v-model="form.visible">
-                                <el-radio v-for="dict in sys_show_hide" :key="dict.value" :value="dict.value">{{
-                                    dict.label
-                                }}</el-radio>
-                            </el-radio-group> -->
+                            <el-radio-group v-model="form.hidden">
+                                <el-radio value=true>隐藏</el-radio>
+                                <el-radio value=false>显示</el-radio>
+                            </el-radio-group>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="12">
+                    <!-- <el-col :span="12">
                         <el-form-item>
                             <template #label>
                                 <span>
@@ -303,13 +294,13 @@
                                     菜单状态
                                 </span>
                             </template>
-                            <!-- <el-radio-group v-model="form.status">
+                            <el-radio-group v-model="form.status">
                                 <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
                                     dict.label
                                 }}</el-radio>
-                            </el-radio-group> -->
+                            </el-radio-group>
                         </el-form-item>
-                    </el-col>
+                    </el-col> -->
                 </el-row>
             </el-form>
             <template #footer>
@@ -349,7 +340,7 @@ const data = reactive({
         visible: undefined,
     } as MenuQueryParams,
     rules: {
-        menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
+        title: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
         orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
         path: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }],
     },
@@ -359,11 +350,11 @@ const { queryParams, form, rules } = toRefs(data);
 
 /** 查询菜单列表 */
 function getList() {
-    // loading.value = true;
-    // listMenu(queryParams.value).then((response) => {
-    //     menuList.value = proxy.handleTree(response.data, 'menuId');
-    //     loading.value = false;
-    // });
+    loading.value = true;
+    listMenu(queryParams.value).then((response) => {
+        menuList.value = proxy.handleTree(response.data, 'menuId');
+        loading.value = false;
+    });
 }
 
 /** 查询菜单下拉树结构 */
@@ -423,14 +414,9 @@ function resetQuery() {
 }
 
 /** 新增按钮操作 */
-function handleAdd(row?: SysMenu) {
+function handleAdd() {
     reset();
     getTreeselect();
-    if (row != null && row.menuId) {
-        form.value.parentId = row.menuId;
-    } else {
-        form.value.parentId = 0;
-    }
     open.value = true;
     title.value = '添加菜单';
 }
