@@ -477,8 +477,8 @@ const postOptions = ref<SysPost[]>([]);
 const roleOptions = ref<SysRole[]>([]);
 
 // 组件引用
-import { ElMessage, ElMessageBox } from 'element-plus';
-// import type { FormInstance, FormRules, UploadInstance, UploadUserFile, TreeInstance } from 'element-plus';
+import { ElMessageBox } from 'element-plus';
+import type { FormInstance, FormRules, UploadInstance, UploadUserFile, TreeInstance } from 'element-plus';
 const deptTreeRef = useTemplateRef<TreeInstance>('deptTreeRef');
 const userRef = useTemplateRef<FormInstance>('userRef');
 const uploadRef = useTemplateRef<UploadInstance>('uploadRef');

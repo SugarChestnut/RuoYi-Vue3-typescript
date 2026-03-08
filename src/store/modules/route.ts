@@ -15,39 +15,24 @@ const useRouteStore = defineStore('route', {
     state: () => ({
         routes: [] as RouteRecordRaw[],
         addRoutes: [] as RouteRecordRaw[],
-        defaultRoutes: [] as RouteRecordRaw[],
-        topbarRouters: [] as RouteRecordRaw[],
-        sidebarRouters: [] as RouteRecordRaw[],
     }),
     actions: {
         setRoutes(routes: RouteRecordRaw[]) {
             this.addRoutes = routes;
             this.routes = constantRoutes.concat(routes);
         },
-        setDefaultRoutes(routes: RouteRecordRaw[]) {
-            this.defaultRoutes = constantRoutes;
-        },
-        setTopbarRoutes(routes: RouteRecordRaw[]) {
-            this.topbarRouters = routes;
-        },
-        setSidebarRouters(routes: RouteRecordRaw[]) {
-            this.sidebarRouters = constantRoutes.concat(routes);
-        },
         generateRoutes(): Promise<void> {
             return new Promise((resolve, reject) => {
                 // 向后端请求路由数据
                 getRouters().then((res) => {
                     if (res.flag) {
-                        this.setSidebarRouters(filterChildren(res.data, true));
-                        this.setDefaultRoutes(filterChildren(res.data));
-                        this.setTopbarRoutes(filterChildren(res.data));
-                        addDynamicRoute(dynamicRoutes);
                         const rewriteRoutes = filterChildren(res.data);
                         this.setRoutes(rewriteRoutes);
-                        rewriteRoutes.forEach((route: any) => {
-                            if (!isHttp(route.path)) {
-                                router.addRoute(route); // 动态添加可访问路由表
-                            }
+                        rewriteRoutes.forEach((route) => {
+                            router.addRoute(route); // 动态添加可访问路由表
+                        });
+                        dynamicRoutes.forEach((route) => {
+                            router.addRoute(route); // 动态添加可访问路由表
                         });
                         resolve();
                     } else {
@@ -60,51 +45,61 @@ const useRouteStore = defineStore('route', {
 });
 
 // 将组件为 ParentView 的子组件提级，移除当前组件
-function filterChildren(menus?: SysMenu[], type: boolean = false, lateMenu: any = false): RouteRecordRaw[] {
+function filterChildren(menus?: SysMenu[], lateMenu: any = false): RouteRecordRaw[] {
     var routes: RouteRecordRaw[] = [];
     if (menus && menus.length) {
         menus.forEach((menu) => {
-            if (type) {
-                menu.path = lateMenu ? lateMenu.path + '/' + menu.path : menu.path;
-            }
-            const childrenRoute = filterChildren(menu.children, type, menu);
-            if (type && menu.component === 'ParentView' && childrenRoute && childrenRoute.length) {
-                routes.concat(childrenRoute);
-            } else {
-                var component;
-                if (menu.component) {
-                    // Layout ParentView 组件特殊处理
-                    if (menu.component === 'Layout') {
-                        component = Layout;
-                    } else if (menu.component === 'ParentView') {
-                        component = ParentView;
-                    } else if (menu.component === 'InnerLink') {
-                        component = InnerLink;
-                    } else {
-                        component = loadView(menu.component);
-                    }
+            menu.fullPath = lateMenu ? concatPath(lateMenu.fullPath, menu.path) : concatPath(menu.path);
+            const childrenRoute = filterChildren(menu.children, menu);
+            let component;
+            if (menu.component) {
+                // Layout ParentView 组件特殊处理
+                if (menu.component === 'Layout') {
+                    component = Layout;
+                } else if (menu.component === 'ParentView') {
+                    component = ParentView;
+                } else if (menu.component === 'InnerLink') {
+                    component = InnerLink;
+                } else {
+                    component = loadView(menu.component);
                 }
-                routes.push({
-                    name: menu.routeName,
-                    path: menu.path || '',
-                    component: component,
-                    children: childrenRoute,
-                    meta: {
-                        menuName: menu.menuName,
-                        query: menu.query,
-                        isFrame: menu.isFrame,
-                        isCahce: menu.isCache,
-                        hiddern: menu.visible,
-                        permission: menu.permission,
-                        icon: menu.icon,
-                        hidden: false,
-                    },
-                });
             }
+            routes.push({
+                name: menu.routeName,
+                path: lateMenu ? concatPath(menu.path).slice(1) : concatPath(menu.path),
+                component: component,
+                children: childrenRoute,
+                redirect: childrenRoute.length > 0 ? childrenRoute[0].path : undefined,
+                meta: {
+                    title: menu.title,
+                    fullPath: menu.fullPath,
+                    isFrame: menu.isFrame,
+                    isCahce: menu.isCache,
+                    hiddern: menu.hidden,
+                    permission: menu.permission,
+                    icon: menu.icon,
+                    hidden: false,
+                },
+            });
         });
     }
-
     return routes;
+}
+
+function concatPath(parentPath: string, childPath?: string): string {
+    if (!parentPath.startsWith('/')) {
+        parentPath = '/' + parentPath;
+    }
+    if (!childPath) {
+        return parentPath;
+    }
+    if (parentPath.endsWith('/') && childPath.startsWith('/')) {
+        return parentPath + childPath.substring(1);
+    } else if (!parentPath.endsWith('/') && !childPath.startsWith('/')) {
+        return parentPath + '/' + childPath;
+    } else {
+        return parentPath + childPath;
+    }
 }
 
 // 添加动态路由遍历，验证是否具备权限
@@ -119,14 +114,13 @@ export function addDynamicRoute(routes: RouteRecordRaw[]) {
 }
 
 export const loadView = (view: string): any => {
-    let res;
     for (const path in modules) {
         const dir = path.split('views/')[1];
         if (dir === view) {
-            res = () => modules[path]();
+            // res = () => modules[path]();
+            return modules[path];
         }
     }
-    return res;
 };
 
 export default useRouteStore;

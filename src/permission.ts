@@ -8,6 +8,8 @@ import { isRelogin } from '@/utils/request';
 import useUserStore from '@/store/modules/user';
 import useSettingsStore from '@/store/modules/settings';
 import useRouteStore from '@/store/modules/route';
+import Layout from '@/layout/index.vue';
+import User from '@/views/system/user/index.vue';
 
 NProgress.configure({ showSpinner: false });
 
@@ -19,6 +21,7 @@ const isWhiteList = (path: string): boolean => {
 
 router.beforeEach((to, from, next) => {
     console.log(from.path, to.path);
+    console.log(router.getRoutes());
     NProgress.start();
     if (getToken()) {
         to.meta.title && useSettingsStore().setTitle(to.meta.title as string);
@@ -43,7 +46,7 @@ router.beforeEach((to, from, next) => {
                                 .generateRoutes()
                                 .then(() => {
                                     console.log(router.getRoutes());
-                                    next({ ...to, replace: true }); // hack方法 确保addRoutes已完成
+                                    next({ ...to, replace: true });
                                 });
                         }
                     })

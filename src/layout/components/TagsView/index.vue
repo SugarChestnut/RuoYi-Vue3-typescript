@@ -60,7 +60,7 @@ const route = useRoute();
 const router = useRouter();
 
 const visitedViews = computed(() => useTagsStore().visitedTags);
-const routes = computed(() => useRouteStore().sidebarRouters);
+const routes = computed(() => useRouteStore().routes);
 const theme = computed(() => useSettingsStore().theme);
 const tagsIcon = computed(() => useSettingsStore().tagsIcon);
 
@@ -120,7 +120,7 @@ function filterAffixTags(routes: any[]): any[] {
         if (route.meta && route.meta.affix) {
             tags.push({
                 path: route.path,
-                name: route.meta.menuName || 'no-name',
+                name: route.meta.title || 'no-name',
                 meta: { ...route.meta },
             });
         }

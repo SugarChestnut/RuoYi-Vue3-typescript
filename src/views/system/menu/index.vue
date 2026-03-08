@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
         <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch">
-            <el-form-item label="菜单名称" prop="menuName">
+            <el-form-item label="菜单名称" prop="title">
                 <el-input
                     v-model="queryParams.menuName"
                     placeholder="请输入菜单名称"
@@ -10,7 +10,7 @@
                     @keyup.enter="handleQuery"
                 />
             </el-form-item>
-            <el-form-item label="状态" prop="status">
+            <!-- <el-form-item label="状态" prop="status">
                 <el-select v-model="queryParams.status" placeholder="菜单状态" clearable style="width: 200px">
                     <el-option
                         v-for="dict in sys_normal_disable"
@@ -19,7 +19,7 @@
                         :value="dict.value"
                     />
                 </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
                 <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
                 <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -28,9 +28,9 @@
 
         <el-row :gutter="10" class="mb8">
             <el-col :span="1.5">
-                <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['system:menu:add']"
-                    >新增</el-button
-                >
+                <el-button type="primary" plain icon="Plus" @click="handleAdd(undefined)" v-hasPermi="[]">
+                    新增
+                </el-button>
             </el-col>
             <el-col :span="1.5">
                 <el-button type="info" plain icon="Sort" @click="toggleExpandAll">展开/折叠</el-button>
@@ -60,11 +60,11 @@
             <el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
             <el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="status" label="状态" width="80">
+            <!-- <el-table-column prop="status" label="状态" width="80">
                 <template #default="scope">
                     <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
                 </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column label="创建时间" width="160" prop="gmtCreate"></el-table-column>
             <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
                 <template #default="scope">
@@ -152,8 +152,8 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="菜单名称" prop="menuName">
-                            <el-input v-model="form.menuName" placeholder="请输入菜单名称" />
+                        <el-form-item label="菜单名称" prop="title">
+                            <el-input v-model="form.title" placeholder="请输入菜单名称" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12" v-if="form.menuType == 'C'">
@@ -283,11 +283,11 @@
                                     显示状态
                                 </span>
                             </template>
-                            <el-radio-group v-model="form.visible">
+                            <!-- <el-radio-group v-model="form.visible">
                                 <el-radio v-for="dict in sys_show_hide" :key="dict.value" :value="dict.value">{{
                                     dict.label
                                 }}</el-radio>
-                            </el-radio-group>
+                            </el-radio-group> -->
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -303,11 +303,11 @@
                                     菜单状态
                                 </span>
                             </template>
-                            <el-radio-group v-model="form.status">
+                            <!-- <el-radio-group v-model="form.status">
                                 <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
                                     dict.label
                                 }}</el-radio>
-                            </el-radio-group>
+                            </el-radio-group> -->
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -327,13 +327,14 @@ import { createMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system
 import SvgIcon from '@/components/SvgIcon/index.vue';
 import IconSelect from '@/components/IconSelect/index.vue';
 import type { SysMenu, MenuQueryParams } from '@/types/api/menu';
+import modal from '@/plugins/modal';
 
-const { proxy } = getCurrentInstance();
-const { sys_show_hide, sys_normal_disable } = proxy.useDict('sys_show_hide', 'sys_normal_disable');
+import { FormInstance } from 'element-plus';
+const menuRef = useTemplateRef<FormInstance>('menuRef');
 
 const menuList = ref<any[]>([]);
 const open = ref<boolean>(false);
-const loading = ref<boolean>(true);
+const loading = ref<boolean>(false);
 const showSearch = ref<boolean>(true);
 const title = ref<string>('');
 const menuOptions = ref<any[]>([]);
@@ -344,7 +345,7 @@ const iconSelectRef = ref<any | null>(null);
 const data = reactive({
     form: {} as SysMenu,
     queryParams: {
-        menuName: undefined,
+        title: undefined,
         visible: undefined,
     } as MenuQueryParams,
     rules: {
@@ -358,21 +359,21 @@ const { queryParams, form, rules } = toRefs(data);
 
 /** 查询菜单列表 */
 function getList() {
-    loading.value = true;
-    listMenu(queryParams.value).then((response) => {
-        menuList.value = proxy.handleTree(response.data, 'menuId');
-        loading.value = false;
-    });
+    // loading.value = true;
+    // listMenu(queryParams.value).then((response) => {
+    //     menuList.value = proxy.handleTree(response.data, 'menuId');
+    //     loading.value = false;
+    // });
 }
 
 /** 查询菜单下拉树结构 */
 function getTreeselect() {
-    menuOptions.value = [];
-    listMenu().then((response) => {
-        const menu = { menuId: 0, menuName: '主类目', children: [] };
-        menu.children = proxy.handleTree(response.data, 'menuId');
-        menuOptions.value.push(menu);
-    });
+    // menuOptions.value = [];
+    // listMenu().then((response) => {
+    //     const menu = { menuId: 0, menuName: '主类目', children: [] };
+    //     menu.children = proxy.handleTree(response.data, 'menuId');
+    //     menuOptions.value.push(menu);
+    // });
 }
 
 /** 取消按钮 */
@@ -385,17 +386,19 @@ function cancel() {
 function reset() {
     form.value = {
         menuId: undefined,
-        parentId: 0,
-        menuName: undefined,
+        parentId: undefined,
+        routeName: '',
+        title: '',
+        path: '',
         icon: undefined,
         menuType: 'M',
         orderNum: undefined,
-        isFrame: '1',
-        isCache: '0',
-        visible: '0',
-        status: '0',
+        isFrame: false,
+        isCache: false,
+        hidden: false,
+        status: true,
     };
-    proxy.resetForm('menuRef');
+    // proxy.resetForm('menuRef');
 }
 
 /** 展示下拉图标 */
@@ -415,7 +418,7 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
-    proxy.resetForm('queryRef');
+    // proxy.resetForm('queryRef');
     handleQuery();
 }
 
@@ -454,17 +457,17 @@ async function handleUpdate(row: SysMenu) {
 
 /** 提交按钮 */
 function submitForm() {
-    proxy.$refs['menuRef'].validate((valid: boolean) => {
+    menuRef.value!.validate((valid: boolean) => {
         if (valid) {
             if (form.value.menuId != undefined) {
                 updateMenu(form.value).then(() => {
-                    proxy.$modal.msgSuccess('修改成功');
+                    modal.msgSuccess('修改成功');
                     open.value = false;
                     getList();
                 });
             } else {
                 createMenu(form.value).then(() => {
-                    proxy.$modal.msgSuccess('新增成功');
+                    modal.msgSuccess('新增成功');
                     open.value = false;
                     getList();
                 });
@@ -475,17 +478,20 @@ function submitForm() {
 
 /** 删除按钮操作 */
 function handleDelete(row: SysMenu) {
-    proxy.$modal
-        .confirm('是否确认删除名称为"' + row.menuName + '"的数据项?')
+    modal
+        .confirm('是否确认删除名称为"' + row.title + '"的数据项?')
         .then(function () {
             return delMenu(row.menuId!);
         })
         .then(() => {
             getList();
-            proxy.$modal.msgSuccess('删除成功');
+            modal.msgSuccess('删除成功');
         })
         .catch(() => {});
 }
 
-getList();
+onMounted(() => {
+    getList();
+});
+
 </script>

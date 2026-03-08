@@ -1,4 +1,3 @@
-// export {};
 /** 模块类型声明 */
 declare module '*.vue' {
     import type { DefineComponent } from 'vue';
@@ -7,7 +6,7 @@ declare module '*.vue' {
 }
 
 // element-plus
-declare module 'element-plus';
+// declare module 'element-plus';
 // axios
 declare module 'axios';
 // vue-quill

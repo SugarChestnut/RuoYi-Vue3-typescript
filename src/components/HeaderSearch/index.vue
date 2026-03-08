@@ -188,7 +188,7 @@ function selectActiveResult(): void {
 }
 
 onMounted(() => {
-  searchPool.value = generateRoutes(routes.value)
+  // searchPool.value = generateRoutes(routes.value)
 })
 
 watch(searchPool, (list: SearchItem[]) => {

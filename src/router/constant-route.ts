@@ -20,53 +20,84 @@ export const constantRoutes: RouteRecordRaw[] = [
         },
     },
     /**
-     * 动态路由，匹配所有路径，并将匹配的内容放在 route.params.pathMatch 中
+     * 嵌套路由，会加载 Layout 组件，然后在 Layout 组件中加载子路由组件
      */
     {
-        path: '/:pathMatch(.*)*',
-        name: '404',
-        component: () => import('@/views/error/404.vue'),
+        path: '/',
+        name: 'Root',
+        component: Layout,
+        redirect: 'index',
+        children: [
+            {
+                path: 'index',
+                name: 'Index',
+                component: () => import('@/views/index.vue'),
+                meta: { title: '首页', icon: 'dashboard', affix: true, fullPath: '/index' },
+            },
+        ],
         meta: {
             hidden: true,
         },
     },
     /**
-     * 嵌套路由，会加载 Layout 组件，然后在 Layout 组件中加载子路由组件
+     * 系统管理
      */
-    {
-        path: '',
-        name: 'Root',
-        component: Layout,
-        redirect: '/index',
-        children: [
-            {
-                path: '/index',
-                name: 'Index',
-                component: () => import('@/views/index.vue'),
-                meta: { menuName: '首页', icon: 'dashboard', affix: true },
-            },
-        ],
-        meta: {
-            hidden: true,
-        },
-    },
-    {
-        path: '/redirect',
-        name: 'Redirect',
-        component: Layout,
-        children: [
-            {
-                path: '/redirect/:path(.*)',
-                component: () => import('@/views/redirect/index.vue'),
-                meta: {
-                    hidden: true,
-                },
-            },
-        ],
-        meta: {
-            hidden: true,
-        },
-    },
+    // {
+    //     path: '/system',
+    //     name: 'System',
+    //     component: Layout,
+    //     redirect: '/system/user',
+    //     meta: {
+    //         menuName: '系统管理',
+    //         icon: 'system',
+    //     },
+    //     children: [
+    //         {
+    //             path: 'user',
+    //             name: 'SystemUser',
+    //             component: () => import('@/views/system/user/index.vue'),
+    //             meta: {
+    //                 title: '用户管理',
+    //                 fullPath: '/system/user',
+    //             },
+    //         },
+    //         {
+    //             path: 'menu',
+    //             name: 'SystemMenu',
+    //             component: () => import('@/views/system/menu/index.vue'),
+    //             meta: {
+    //                 title: '菜单管理',
+    //                 fullPath: '/system/menu',
+    //             },
+    //         },
+    //         {
+    //             path: 'role',
+    //             name: 'SystemRole',
+    //             component: () => import('@/views/system/role/index.vue'),
+    //             meta: {
+    //                 title: '角色管理',
+    //                 fullPath: '/system/role',
+    //             },
+    //         },
+    //     ],
+    // },    
+    // {
+    //     path: '/redirect',
+    //     name: 'Redirect',
+    //     component: Layout,
+    //     children: [
+    //         {
+    //             path: '/redirect/:path(.*)',
+    //             component: () => import('@/views/redirect/index.vue'),
+    //             meta: {
+    //                 hidden: true,
+    //             },
+    //         },
+    //     ],
+    //     meta: {
+    //         hidden: true,
+    //     },
+    // },
     // {
     //     path: '/user',
     //     component: Layout,
