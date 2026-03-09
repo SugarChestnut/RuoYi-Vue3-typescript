@@ -39,7 +39,7 @@ export interface SysMenu extends BaseEntity {
     menuType?: 'M' | 'C' | 'F';
     /** 显示状态（0显示 1隐藏） */
     hidden?: boolean;
-    /** 状态（0停用 1正常） */
+    /** 状态（0正常 1停用） */
     status?: boolean;
     /** 子菜单 */
     children?: SysMenu[];
@@ -47,7 +47,7 @@ export interface SysMenu extends BaseEntity {
     fullPath?: string;
 }
 
-export interface RoleMenuTreeselectResult extends Result {
+export interface RoleMenuTreeselectResult {
     /** 已选中的菜单ID列表 */
     checkedKeys: number[];
 }

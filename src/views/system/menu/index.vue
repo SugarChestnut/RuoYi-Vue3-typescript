@@ -28,7 +28,7 @@
 
         <el-row :gutter="10" class="mb8">
             <el-col :span="1.5">
-                <el-button type="primary" plain icon="Plus" @click="handleAdd()" v-hasPermi="[]"> 新增 </el-button>
+                <el-button type="primary" plain icon="Plus" @click="handleAdd()" v-hasPermi="[]">新增</el-button>
             </el-col>
             <el-col :span="1.5">
                 <el-button type="info" plain icon="Sort" @click="toggleExpandAll">展开/折叠</el-button>
@@ -52,6 +52,13 @@
                 </template>
             </el-table-column>
             <el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
+            <el-table-column prop="menuType" label="菜单类型" width="100">
+                <template #default="scope">
+                    <el-tag type="primary" v-if="scope.row.menuType === 'M'">目录</el-tag>
+                    <el-tag type="success" v-else-if="scope.row.menuType === 'C'">菜单</el-tag>
+                    <el-tag type="info" v-else>按钮</el-tag>
+                </template>
+            </el-table-column>
             <el-table-column prop="permission" label="权限标识" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true"></el-table-column>
             <!-- <el-table-column prop="status" label="状态" width="80">
@@ -61,8 +68,15 @@
             </el-table-column> -->
             <el-table-column label="操作" align="center" width="210">
                 <template #default="scope">
-                    <el-button size="small" @click="handleEdit(scope.row)" v-hasPermi="['system:menu:edit']"> 修改 </el-button>
-                    <el-button size="small" type="danger" @click="handleDelete(scope.row)" v-hasPermi="['system:menu:remove']">
+                    <el-button size="small" @click="handleEdit(scope.row)" v-hasPermi="['system:menu:edit']">
+                        修改
+                    </el-button>
+                    <el-button
+                        size="small"
+                        type="danger"
+                        @click="handleDelete(scope.row)"
+                        v-hasPermi="['system:menu:remove']"
+                    >
                         删除
                     </el-button>
                 </template>
@@ -78,7 +92,7 @@
                             <el-tree-select
                                 v-model="form.parentId"
                                 :data="menuOptions"
-                                :props="{ value: 'menuId', label: 'menuName', children: 'children' }"
+                                :props="{ label: 'title', children: 'children' }"
                                 value-key="menuId"
                                 placeholder="选择上级菜单"
                                 check-strictly
@@ -220,8 +234,8 @@
                                 </span>
                             </template>
                             <el-radio-group v-model="form.isFrame">
-                                <el-radio value="0">是</el-radio>
-                                <el-radio value="1">否</el-radio>
+                                <el-radio :value="true">是</el-radio>
+                                <el-radio :value="false">否</el-radio>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
@@ -239,8 +253,8 @@
                                 </span>
                             </template>
                             <el-radio-group v-model="form.isCache">
-                                <el-radio value="true">缓存</el-radio>
-                                <el-radio value="false">不缓存</el-radio>
+                                <el-radio :value="true">缓存</el-radio>
+                                <el-radio :value="false">不缓存</el-radio>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
@@ -258,12 +272,12 @@
                                 </span>
                             </template>
                             <el-radio-group v-model="form.hidden">
-                                <el-radio value="true">隐藏</el-radio>
-                                <el-radio value="false">显示</el-radio>
+                                <el-radio :value="true">隐藏</el-radio>
+                                <el-radio :value="false">显示</el-radio>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
-                    <!-- <el-col :span="12">
+                    <el-col :span="12">
                         <el-form-item>
                             <template #label>
                                 <span>
@@ -277,12 +291,11 @@
                                 </span>
                             </template>
                             <el-radio-group v-model="form.status">
-                                <el-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
-                                    dict.label
-                                }}</el-radio>
+                                <el-radio :value="false">启用</el-radio>
+                                <el-radio :value="true">停用</el-radio>
                             </el-radio-group>
                         </el-form-item>
-                    </el-col> -->
+                    </el-col>
                 </el-row>
             </el-form>
             <template #footer>
@@ -296,20 +309,21 @@
 </template>
 
 <script setup lang="ts" name="Menu">
-import { createMenu, delMenu, getMenu, listMenu, editMenu, getTree } from '@/api/system/menu';
+import { createMenu, delMenu, editMenu, getTree } from '@/api/system/menu';
 import IconSelect from '@/components/IconSelect/index.vue';
 import type { SysMenu, MenuQueryParams } from '@/types/api/menu';
 import modal from '@/plugins/modal';
 
 import { FormInstance } from 'element-plus';
 const menuRef = useTemplateRef<FormInstance>('menuRef');
+const queryRef = useTemplateRef<FormInstance>('queryRef');
 
-const menuList = ref<any[]>([]);
+const menuList = ref<SysMenu[]>([]);
 const open = ref<boolean>(false);
 const loading = ref<boolean>(false);
 const showSearch = ref<boolean>(true);
 const title = ref<string>('');
-const menuOptions = ref<any[]>([]);
+const menuOptions = ref<SysMenu[]>([]);
 const isExpandAll = ref<boolean>(false);
 const refreshTable = ref<boolean>(true);
 const iconSelectRef = ref<any | null>(null);
@@ -333,20 +347,20 @@ const { queryParams, form, rules } = toRefs(data);
 function getList() {
     loading.value = true;
     getTree(queryParams.value).then((res) => {
-        console.log(res);
         menuList.value = res.data;
         loading.value = false;
     });
 }
 
 /** 查询菜单下拉树结构 */
-function getTreeselect() {
-    // menuOptions.value = [];
-    // listMenu().then((response) => {
-    //     const menu = { menuId: 0, menuName: '主类目', children: [] };
-    //     menu.children = proxy.handleTree(response.data, 'menuId');
-    //     menuOptions.value.push(menu);
-    // });
+function getTreeselect(menus: SysMenu[]) {
+    if (form.value.parentId === undefined) {
+        return menus;
+    }
+    menus.forEach((item) => {
+        item.children = getTreeselect(item.children || []);
+    });
+    return menus.filter((item) => item.menuId !== form.value.menuId);
 }
 
 /** 取消按钮 */
@@ -369,7 +383,7 @@ function reset() {
         isFrame: false,
         isCache: false,
         hidden: false,
-        status: true,
+        status: false,
     };
     menuRef.value?.resetFields();
 }
@@ -391,14 +405,14 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
-    // proxy.resetForm('queryRef');
+    queryRef.value?.resetFields();
     handleQuery();
 }
 
 /** 新增按钮操作 */
 function handleAdd() {
     reset();
-    getTreeselect();
+    menuOptions.value = getTreeselect(menuList.value);
     open.value = true;
     title.value = '添加菜单';
 }
@@ -415,10 +429,10 @@ function toggleExpandAll() {
 /** 修改按钮操作 */
 async function handleEdit(row: SysMenu) {
     reset();
-    // await getTreeselect();
     if (row.parentId === 0) row.parentId = undefined;
     form.value = row;
     title.value = '修改菜单';
+    menuOptions.value = getTreeselect(menuList.value);
     open.value = true;
     console.log(form.value);
 }

@@ -10,8 +10,8 @@
                 <el-menu-item :index="item.path">
                     <svg-icon :icon-class="item.meta!.icon" />
                     <template #title>
-                        <span class="menu-title" :title="getTitle(item.meta!.menuName)">
-                            {{ getTitle(item.meta!.title) }}
+                        <span class="menu-title" :title="item.meta!.title">
+                            {{ item.meta!.title }}
                         </span>
                     </template>
                 </el-menu-item>
@@ -21,8 +21,8 @@
         <el-sub-menu v-else ref="subMenu" :index="item.path" teleported>
             <template #title>
                 <svg-icon :icon-class="item.meta!.icon" />
-                <span class="menu-title" :title="getTitle(item.meta!.title)">
-                    {{ getTitle(item.meta!.title) }}
+                <span class="menu-title" :title="item.meta!.title">
+                    {{ item.meta!.title }}
                 </span>
             </template>
 
@@ -42,13 +42,5 @@ const props = defineProps<{
 
 function resolveLinkPath(routePath: string, routeQuery?: any): string | { path: string; query: Record<string, any> } {
     return routeQuery ? { path: routePath, query: JSON.parse(routeQuery) } : routePath;
-}
-
-function getTitle(title: any): string {
-    if (title) {
-        return title as string;
-    } else {
-        return '11';
-    }
 }
 </script>
