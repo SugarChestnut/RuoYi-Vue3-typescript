@@ -4,7 +4,7 @@ import type { BaseEntity, Result, TreeSelect } from './common';
 /** 菜单查询参数 */
 export interface MenuQueryParams {
     /** 菜单名称 */
-    menuName?: string;
+    title?: string;
     /** 状态 */
     status?: string;
 }

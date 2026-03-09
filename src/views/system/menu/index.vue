@@ -3,7 +3,7 @@
         <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch">
             <el-form-item label="菜单名称" prop="title">
                 <el-input
-                    v-model="queryParams.menuName"
+                    v-model="queryParams.title"
                     placeholder="请输入菜单名称"
                     clearable
                     style="width: 200px"
@@ -28,9 +28,7 @@
 
         <el-row :gutter="10" class="mb8">
             <el-col :span="1.5">
-                <el-button type="primary" plain icon="Plus" @click="handleAdd()" v-hasPermi="[]">
-                    新增
-                </el-button>
+                <el-button type="primary" plain icon="Plus" @click="handleAdd()" v-hasPermi="[]"> 新增 </el-button>
             </el-col>
             <el-col :span="1.5">
                 <el-button type="info" plain icon="Sort" @click="toggleExpandAll">展开/折叠</el-button>
@@ -43,47 +41,30 @@
             v-loading="loading"
             :data="menuList"
             row-key="menuId"
+            border
             :default-expand-all="isExpandAll"
             :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         >
-            <el-table-column
-                prop="menuName"
-                label="菜单名称"
-                :show-overflow-tooltip="true"
-                width="160"
-            ></el-table-column>
+            <el-table-column prop="title" label="菜单名称" :show-overflow-tooltip="true" width="160"></el-table-column>
             <el-table-column prop="icon" label="图标" align="center" width="100">
                 <template #default="scope">
                     <svg-icon :icon-class="scope.row.icon" />
                 </template>
             </el-table-column>
             <el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
-            <el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="permission" label="权限标识" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true"></el-table-column>
             <!-- <el-table-column prop="status" label="状态" width="80">
                 <template #default="scope">
                     <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
                 </template>
             </el-table-column> -->
-            <el-table-column label="创建时间" width="160" prop="gmtCreate"></el-table-column>
-            <el-table-column label="操作" align="center" width="210" class-name="small-padding fixed-width">
+            <el-table-column label="操作" align="center" width="210">
                 <template #default="scope">
-                    <el-button
-                        link
-                        type="primary"
-                        icon="Edit"
-                        @click="handleUpdate(scope.row)"
-                        v-hasPermi="['system:menu:edit']"
-                        >修改</el-button
-                    >
-                    <el-button
-                        link
-                        type="primary"
-                        icon="Delete"
-                        @click="handleDelete(scope.row)"
-                        v-hasPermi="['system:menu:remove']"
-                        >删除</el-button
-                    >
+                    <el-button size="small" @click="handleEdit(scope.row)" v-hasPermi="['system:menu:edit']"> 修改 </el-button>
+                    <el-button size="small" type="danger" @click="handleDelete(scope.row)" v-hasPermi="['system:menu:remove']">
+                        删除
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -233,8 +214,9 @@
                             <template #label>
                                 <span>
                                     <el-tooltip content="选择是外链则路由地址需要以`http(s)://`开头" placement="top">
-                                        <el-icon><question-filled /></el-icon> </el-tooltip
-                                    > 是否外链
+                                        <el-icon><question-filled /></el-icon>
+                                    </el-tooltip>
+                                    是否外链
                                 </span>
                             </template>
                             <el-radio-group v-model="form.isFrame">
@@ -257,8 +239,8 @@
                                 </span>
                             </template>
                             <el-radio-group v-model="form.isCache">
-                                <el-radio value=true>缓存</el-radio>
-                                <el-radio value=false>不缓存</el-radio>
+                                <el-radio value="true">缓存</el-radio>
+                                <el-radio value="false">不缓存</el-radio>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
@@ -276,8 +258,8 @@
                                 </span>
                             </template>
                             <el-radio-group v-model="form.hidden">
-                                <el-radio value=true>隐藏</el-radio>
-                                <el-radio value=false>显示</el-radio>
+                                <el-radio value="true">隐藏</el-radio>
+                                <el-radio value="false">显示</el-radio>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
@@ -314,8 +296,7 @@
 </template>
 
 <script setup lang="ts" name="Menu">
-import { createMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
-import SvgIcon from '@/components/SvgIcon/index.vue';
+import { createMenu, delMenu, getMenu, listMenu, editMenu, getTree } from '@/api/system/menu';
 import IconSelect from '@/components/IconSelect/index.vue';
 import type { SysMenu, MenuQueryParams } from '@/types/api/menu';
 import modal from '@/plugins/modal';
@@ -351,8 +332,9 @@ const { queryParams, form, rules } = toRefs(data);
 /** 查询菜单列表 */
 function getList() {
     loading.value = true;
-    listMenu(queryParams.value).then((response) => {
-        menuList.value = proxy.handleTree(response.data, 'menuId');
+    getTree(queryParams.value).then((res) => {
+        console.log(res);
+        menuList.value = res.data;
         loading.value = false;
     });
 }
@@ -389,7 +371,7 @@ function reset() {
         hidden: false,
         status: true,
     };
-    // proxy.resetForm('menuRef');
+    menuRef.value?.resetFields();
 }
 
 /** 展示下拉图标 */
@@ -431,14 +413,14 @@ function toggleExpandAll() {
 }
 
 /** 修改按钮操作 */
-async function handleUpdate(row: SysMenu) {
+async function handleEdit(row: SysMenu) {
     reset();
-    await getTreeselect();
-    getMenu(row.menuId!).then((response) => {
-        form.value = response.data!;
-        open.value = true;
-        title.value = '修改菜单';
-    });
+    // await getTreeselect();
+    if (row.parentId === 0) row.parentId = undefined;
+    form.value = row;
+    title.value = '修改菜单';
+    open.value = true;
+    console.log(form.value);
 }
 
 /** 提交按钮 */
@@ -446,7 +428,7 @@ function submitForm() {
     menuRef.value!.validate((valid: boolean) => {
         if (valid) {
             if (form.value.menuId != undefined) {
-                updateMenu(form.value).then(() => {
+                editMenu(form.value).then(() => {
                     modal.msgSuccess('修改成功');
                     open.value = false;
                     getList();
@@ -479,5 +461,4 @@ function handleDelete(row: SysMenu) {
 onMounted(() => {
     getList();
 });
-
 </script>

@@ -20,8 +20,6 @@ const isWhiteList = (path: string): boolean => {
 };
 
 router.beforeEach((to, from, next) => {
-    console.log(from.path, to.path);
-    console.log(router.getRoutes());
     NProgress.start();
     if (getToken()) {
         to.meta.title && useSettingsStore().setTitle(to.meta.title as string);
@@ -45,7 +43,6 @@ router.beforeEach((to, from, next) => {
                             useRouteStore()
                                 .generateRoutes()
                                 .then(() => {
-                                    console.log(router.getRoutes());
                                     next({ ...to, replace: true });
                                 });
                         }

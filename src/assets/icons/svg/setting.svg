@@ -1,0 +1,44 @@
+<!-- settings-orange-128px.svg -->
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景光晕 -->
+  <circle cx="64" cy="64" r="50" fill="#E6A23C" fill-opacity="0.1" />
+
+  <!-- 外圈警告环 -->
+  <circle cx="64" cy="64" r="58" stroke="#E6A23C" stroke-width="3" stroke-opacity="0.3"
+    stroke-dasharray="8 6" />
+
+  <!-- 主齿轮填充 -->
+  <circle cx="64" cy="64" r="40" fill="#E6A23C" fill-opacity="0.15" stroke="#E6A23C"
+    stroke-width="3.5" />
+  <circle cx="64" cy="64" r="28" fill="#E6A23C" fill-opacity="0.1" stroke="#E6A23C"
+    stroke-width="2.5" />
+
+  <!-- 中心警告标志 -->
+  <circle cx="64" cy="64" r="16" fill="#E6A23C" fill-opacity="0.3" stroke="#E6A23C" stroke-width="3" />
+  <path d="M64 52L64 68M64 76L64 78" stroke="#E6A23C" stroke-width="4" stroke-linecap="round" />
+  <circle cx="64" cy="82" r="2" fill="#E6A23C" />
+
+  <!-- 齿轮齿（三角形设计） -->
+  <g fill="#E6A23C">
+    <!-- 顶部三角形齿 -->
+    <polygon points="64,8 72,24 56,24" fill-opacity="0.9" />
+    <!-- 底部三角形齿 -->
+    <polygon points="64,120 72,104 56,104" fill-opacity="0.9" />
+    <!-- 右侧三角形齿 -->
+    <polygon points="120,64 104,72 104,56" fill-opacity="0.9" />
+    <!-- 左侧三角形齿 -->
+    <polygon points="8,64 24,72 24,56" fill-opacity="0.9" />
+
+    <!-- 斜角三角形齿 -->
+    <polygon points="100,28 92,40 84,32" fill-opacity="0.8" transform="rotate(45 92 34)" />
+    <polygon points="28,100 40,92 32,84" fill-opacity="0.8" transform="rotate(45 36 92)" />
+    <polygon points="100,100 92,88 84,96" fill-opacity="0.8" transform="rotate(135 92 92)" />
+    <polygon points="28,28 40,36 32,44" fill-opacity="0.8" transform="rotate(135 36 36)" />
+  </g>
+
+  <!-- 装饰点 -->
+  <circle cx="44" cy="44" r="4" fill="#E6A23C" fill-opacity="0.6" />
+  <circle cx="84" cy="44" r="4" fill="#E6A23C" fill-opacity="0.6" />
+  <circle cx="44" cy="84" r="4" fill="#E6A23C" fill-opacity="0.6" />
+  <circle cx="84" cy="84" r="4" fill="#E6A23C" fill-opacity="0.6" />
+</svg>

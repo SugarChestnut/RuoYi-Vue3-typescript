@@ -44,9 +44,9 @@ export function createMenu(data: SysMenu): Promise<Result> {
 }
 
 // 修改菜单
-export function updateMenu(data: SysMenu): Promise<Result> {
+export function editMenu(data: SysMenu): Promise<Result> {
     return request({
-        url: '/system/menu/update',
+        url: '/system/menu/edit',
         method: 'post',
         data: data,
     });
@@ -59,3 +59,20 @@ export function delMenu(menuId: number): Promise<Result> {
         method: 'post',
     });
 }
+
+// 获取菜单树
+export const getRouters = (): Promise<Result<SysMenu[]>> => {
+    return request({
+        url: '/system/menu/route',
+        method: 'get',
+    });
+};
+
+// 获取菜单树
+export const getTree = (data: MenuQueryParams): Promise<Result<SysMenu[]>> => {
+    return request({
+        url: '/system/menu/tree',
+        method: 'post',
+        data: data,
+    });
+};
