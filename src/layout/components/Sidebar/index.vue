@@ -14,8 +14,8 @@
                 :class="sideTheme"
             >
                 <sidebar-item
-                    v-for="(route, index) in sidebarRouters"
-                    :key="route.path + index"
+                    v-for="(route) in sidebarRouters"
+                    :key="route.meta!.title"
                     :item="route"
                 />
             </el-menu>
@@ -58,11 +58,8 @@ const getMenuTextColor = computed(() => {
 });
 
 const activeMenu = computed(() => {
-    const { meta, path } = route;
-    if (meta.activeMenu) {
-        return meta.activeMenu;
-    }
-    return path;
+    const { meta } = route;
+    return meta.title;
 });
 </script>
 

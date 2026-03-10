@@ -68,17 +68,17 @@
             </el-table-column> -->
             <el-table-column label="操作" align="center" width="210">
                 <template #default="scope">
-                    <el-button size="small" @click="handleEdit(scope.row)" v-hasPermi="['system:menu:edit']">
-                        修改
-                    </el-button>
+                    <el-button size="small" @click="handleEdit(scope.row)" v-hasPermi="['system:menu:edit']" icon="Edit"
+                        >修改</el-button
+                    >
                     <el-button
                         size="small"
                         type="danger"
                         @click="handleDelete(scope.row)"
                         v-hasPermi="['system:menu:remove']"
+                        icon="Delete"
+                        >删除</el-button
                     >
-                        删除
-                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -311,7 +311,7 @@
 <script setup lang="ts" name="Menu">
 import { createMenu, delMenu, editMenu, getTree } from '@/api/system/menu';
 import IconSelect from '@/components/IconSelect/index.vue';
-import type { SysMenu, MenuQueryParams } from '@/types/api/menu';
+import type { SysMenu, MenuQueryParams } from '@/types';
 import modal from '@/plugins/modal';
 
 import type { FormInstance } from 'element-plus';

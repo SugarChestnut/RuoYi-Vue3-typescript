@@ -7,7 +7,7 @@
     <div v-else>
         <template v-if="!(item.children && item.children.length > 0)">
             <app-link :to="item.meta!.fullPath!">
-                <el-menu-item :index="item.path">
+                <el-menu-item :index="item.meta!.title">
                     <svg-icon :icon-class="item.meta!.icon" />
                     <template #title>
                         <span class="menu-title" :title="item.meta!.title">

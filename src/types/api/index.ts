@@ -7,9 +7,9 @@ export * from './common';
 export * from './login';
 
 // System 模块
-export * from './user';
-export * from './role';
-export * from './menu';
+export * from './system/user';
+export * from './system/role';
+export * from './system/menu';
 export * from './dept';
 export * from './post';
 export * from './dict';

@@ -1,4 +1,4 @@
-import type { SysRole } from './role';
+import type { SysRole } from './system/role';
 import type { SysDept } from './dept';
 import type { SysPost } from './post';
 import type { PageDomain, Result, BaseEntity } from './common';

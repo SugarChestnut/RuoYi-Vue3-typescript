@@ -19,7 +19,7 @@
                     @keyup.enter="handleQuery"
                 />
             </el-form-item>
-            <el-form-item label="状态" prop="status">
+            <!-- <el-form-item label="状态" prop="status">
                 <el-select v-model="queryParams.status" placeholder="角色状态" clearable style="width: 240px">
                     <el-option
                         v-for="dict in sys_normal_disable"
@@ -28,17 +28,7 @@
                         :value="dict.value"
                     />
                 </el-select>
-            </el-form-item>
-            <el-form-item label="创建时间" style="width: 308px">
-                <el-date-picker
-                    v-model="dateRange"
-                    value-format="YYYY-MM-DD"
-                    type="daterange"
-                    range-separator="-"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                ></el-date-picker>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item>
                 <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
                 <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -50,79 +40,39 @@
                     >新增</el-button
                 >
             </el-col>
-            <el-col :span="1.5">
-                <el-button
-                    type="success"
-                    plain
-                    icon="Edit"
-                    :disabled="single"
-                    @click="handleUpdate"
-                    v-hasPermi="['system:role:edit']"
-                    >修改</el-button
-                >
-            </el-col>
-            <el-col :span="1.5">
-                <el-button
-                    type="danger"
-                    plain
-                    icon="Delete"
-                    :disabled="multiple"
-                    @click="handleDelete"
-                    v-hasPermi="['system:role:remove']"
-                    >删除</el-button
-                >
-            </el-col>
-            <el-col :span="1.5">
-                <el-button
-                    type="warning"
-                    plain
-                    icon="Download"
-                    @click="handleExport"
-                    v-hasPermi="['system:role:export']"
-                    >导出</el-button
-                >
-            </el-col>
             <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
         </el-row>
 
         <!-- 表格数据 -->
-        <el-table v-loading="loading" :data="roleList" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55" align="center" />
-            <el-table-column label="角色编号" prop="roleId" width="120" />
-            <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="150" />
-            <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="150" />
-            <el-table-column label="显示顺序" prop="roleSort" width="100" />
-            <el-table-column label="状态" align="center" width="100">
+        <el-table v-loading="loading" :data="roleList" border>
+            <!-- <el-table-column label="角色编号" prop="roleId" width="120" /> -->
+            <el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" width="200" />
+            <el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="200" />
+            <el-table-column label="状态" align="center" width="150">
                 <template #default="scope">
                     <el-switch
                         v-model="scope.row.status"
-                        active-value="0"
-                        inactive-value="1"
+                        :active-value="false"
+                        :inactive-value="true"
                         @change="handleStatusChange(scope.row)"
                     ></el-switch>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+            <el-table-column label="备注" prop="remark" :show-overflow-tooltip="true" />
+            <el-table-column label="操作" align="center" width="210">
                 <template #default="scope">
-                    <el-tooltip content="修改" placement="top" v-if="scope.row.roleId !== 1">
-                        <el-button
-                            link
-                            type="primary"
-                            icon="Edit"
-                            @click="handleUpdate(scope.row)"
-                            v-hasPermi="['system:role:edit']"
-                        ></el-button>
-                    </el-tooltip>
-                    <el-tooltip content="删除" placement="top" v-if="scope.row.roleId !== 1">
-                        <el-button
-                            link
-                            type="primary"
-                            icon="Delete"
-                            @click="handleDelete(scope.row)"
-                            v-hasPermi="['system:role:remove']"
-                        ></el-button>
-                    </el-tooltip>
-                    <el-tooltip content="数据权限" placement="top" v-if="scope.row.roleId !== 1">
+                    <el-button size="small" @click="handleEdit(scope.row)" v-hasPermi="['system:role:edit']" icon="Edit"
+                        >修改</el-button
+                    >
+                    <el-button
+                        size="small"
+                        type="danger"
+                        @click="handleDelete(scope.row)"
+                        v-hasPermi="['system:role:remove']"
+                        icon="Delete"
+                        >删除</el-button
+                    >
+                    <!-- <el-tooltip content="数据权限" placement="top" v-if="scope.row.roleId !== 1">
                         <el-button
                             link
                             type="primary"
@@ -139,7 +89,7 @@
                             @click="handleAuthUser(scope.row)"
                             v-hasPermi="['system:role:edit']"
                         ></el-button>
-                    </el-tooltip>
+                    </el-tooltip> -->
                 </template>
             </el-table-column>
         </el-table>
@@ -147,8 +97,8 @@
         <pagination
             v-show="total > 0"
             :total="total"
-            v-model:page="queryParams.pageNum"
-            v-model:limit="queryParams.pageSize"
+            :page="queryParams.pageNum"
+            :limit="queryParams.pageSize"
             @pagination="getList"
         />
 
@@ -279,9 +229,9 @@ import {
     deptTreeSelect,
 } from '@/api/system/role';
 // import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
-import type { SysRole, RoleQueryParams } from '@/types/api/role';
+import type { SysRole, RoleQueryParams } from '@/types/api/system/role';
 import type { TreeSelect } from '@/types/api/common';
-import type { RoleDeptTreeResult } from '@/types/api/role';
+import type { RoleDeptTreeResult } from '@/types/api/system/role';
 import type { RoleMenuTreeselectResult } from '@/types/api/menu';
 import modal from '@/plugins/modal';
 
@@ -297,8 +247,6 @@ const open = ref<boolean>(false);
 const loading = ref<boolean>(false);
 const showSearch = ref<boolean>(true);
 const ids = ref<number[]>([]);
-const single = ref<boolean>(true);
-const multiple = ref<boolean>(true);
 const total = ref<number>(0);
 const title = ref<string>('');
 const dateRange = ref<string[]>([]);
@@ -334,17 +282,17 @@ const data = reactive({
         roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
     },
 });
-
 const { queryParams, form, rules } = toRefs(data);
 
 /** 查询角色列表 */
 function getList() {
-    // loading.value = true;
-    // listRole(proxy.addDateRange(queryParams.value, dateRange.value)).then((response) => {
-    //     roleList.value = response.rows;
-    //     total.value = response.total;
-    //     loading.value = false;
-    // });
+    loading.value = true;
+    listRole(queryParams.value).then((res) => {
+        console.log(res);
+        roleList.value = res.data.records;
+        total.value = res.data.total;
+        loading.value = false;
+    });
 }
 
 /** 搜索按钮操作 */
@@ -375,27 +323,9 @@ function handleDelete(row?: SysRole) {
         .catch(() => {});
 }
 
-/** 导出按钮操作 */
-function handleExport() {
-    // proxy.download(
-    //     'system/role/export',
-    //     {
-    //         ...queryParams.value,
-    //     },
-    //     `role_${new Date().getTime()}.xlsx`,
-    // );
-}
-
-/** 多选框选中数据 */
-function handleSelectionChange(selection: SysRole[]) {
-    ids.value = selection.map((item) => item.roleId!);
-    single.value = selection.length != 1;
-    multiple.value = !selection.length;
-}
-
 /** 角色状态修改 */
 function handleStatusChange(row: SysRole) {
-    const text = row.status === '0' ? '启用' : '停用';
+    const text = row.status ? '停用' : '启用';
     modal
         .confirm('确认要"' + text + '""' + row.roleName + '"角色吗?')
         .then(function () {
@@ -405,7 +335,7 @@ function handleStatusChange(row: SysRole) {
             modal.msgSuccess(text + '成功');
         })
         .catch(function () {
-            row.status = row.status === '0' ? '1' : '0';
+            row.status = !row.status;
         });
 }
 
@@ -447,7 +377,7 @@ function getDeptAllCheckedKeys(): number[] {
 
 /** 重置新增的表单以及其他数据  */
 function reset() {
-    menuRef.value!.setCheckedKeys([]);
+    menuRef.value?.setCheckedKeys([]);
     menuExpand.value = false;
     menuNodeAll.value = false;
     deptExpand.value = true;
@@ -456,7 +386,7 @@ function reset() {
         roleId: undefined,
         roleName: undefined,
         roleKey: undefined,
-        status: '0',
+        status: false,
         menuIds: [],
         deptIds: [],
         menuCheckStrictly: true,
@@ -469,13 +399,13 @@ function reset() {
 /** 添加角色 */
 function handleAdd() {
     reset();
-    getMenuTreeselect();
+    // getMenuTreeselect();
     open.value = true;
     title.value = '添加角色';
 }
 
 /** 修改角色 */
-function handleUpdate(row?: SysRole) {
+function handleEdit(row?: SysRole) {
     // reset();
     // const roleId = row?.roleId || ids.value[0];
     // const roleMenu = getRoleMenuTreeselect(roleId);
@@ -502,7 +432,7 @@ function getRoleMenuTreeselect(roleId: number): RoleMenuTreeselectResult {
     //     menuOptions.value = response.menus;
     //     return response;
     // });
-    return {checkedKeys: []};
+    return { checkedKeys: [] };
 }
 
 /** 根据角色ID查询部门树结构 */
@@ -632,6 +562,6 @@ function cancelDataScope() {
 }
 
 onMounted(() => {
-    // getList();
+    getList();
 });
 </script>

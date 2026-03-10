@@ -47,7 +47,7 @@
 
 <script setup lang="ts" name="AuthRole">
 import { getAuthRole, updateAuthRole } from "@/api/system/user"
-import type { SysRole } from '@/types/api/role'
+import type { SysRole } from '@/types/api/system/role'
 import type { SysUser } from '@/types/api/user'
 
 const route = useRoute()

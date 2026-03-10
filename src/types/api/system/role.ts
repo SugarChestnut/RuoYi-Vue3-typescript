@@ -1,4 +1,4 @@
-import type { PageDomain, BaseEntity, Result, TreeSelect } from './common';
+import type { PageDomain, BaseEntity, Result, TreeSelect } from '../common';
 
 /** 角色分页查询参数 */
 export interface RoleQueryParams extends PageDomain {
@@ -7,12 +7,7 @@ export interface RoleQueryParams extends PageDomain {
     /** 角色权限 */
     roleKey?: string;
     /** 状态 */
-    status?: string;
-    /** 创建时间 */
-    params?: {
-        beginTime?: string;
-        endTime?: string;
-    };
+    status?: boolean;
 }
 
 /** 批量授权用户参数 */
@@ -56,7 +51,7 @@ export interface SysRole extends BaseEntity {
     /** 角色权限 */
     deptIds?: number[];
     /** 状态（0正常 1停用） */
-    status?: '0' | '1';
+    status?: boolean;
 }
 
 /** 角色部门树响应 */

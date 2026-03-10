@@ -10,18 +10,13 @@ export interface Result<T = any> {
 }
 
 /** API 表格响应类型 */
-export interface PageResult<T = any> {
-    /** 状态码 */
-    code: number;
-    /** 返回内容 */
-    msg: string;
-    flag: boolean;
+export interface SysPage<T = any> {
     size: number;
     total: number;
     current: number;
     pages: number;
     /** 列表数据 */
-    rows: T[];
+    records: T[];
 }
 
 /** 分页参数类型 */
