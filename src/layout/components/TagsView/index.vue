@@ -13,7 +13,7 @@
                 @contextmenu.prevent="openMenu(tag, $event)"
                 :ref="
                     (el) => {
-                        if (el) tagsRefs[tag.path] = el;
+                        if (el) tagsRefs[tag.name!] = el;
                     }
                 "
             >
@@ -23,7 +23,7 @@
                 />
                 {{ tag.name }}
                 <span v-if="!isAffix(tag)" @click.prevent.stop="closeSelectedTag(tag)">
-                    <close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: middle" />
+                    <close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: -2px;" />
                 </span>
             </router-link>
         </scroll-pane>
@@ -48,6 +48,10 @@ import useSettingsStore from '@/store/modules/settings';
 import useRouteStore from '@/store/modules/route';
 import type { Tag } from '@/types';
 import tab from '@/plugins/tab';
+import type { RouteRecordRaw } from 'vue-router';
+
+import type { ScrollPaneInstance } from '@/types';
+const scrollPaneRef = useTemplateRef<ScrollPaneInstance>('scrollPaneRef');
 
 const tagsRefs = ref<any>({});
 const visible = ref<boolean>(false);
@@ -55,7 +59,6 @@ const top = ref<number>(0);
 const left = ref<number>(0);
 const selectedTag = ref<any>({});
 const affixTags = ref<any[]>([]);
-const scrollPaneRef = ref();
 const route = useRoute();
 const router = useRouter();
 
@@ -66,7 +69,7 @@ const tagsIcon = computed(() => useSettingsStore().tagsIcon);
 
 watch(route, () => {
     addTags();
-    moveToCurrentTag();
+    // moveToCurrentTag();
 });
 
 watch(visible, (value: boolean) => {
@@ -80,18 +83,19 @@ watch(visible, (value: boolean) => {
 onMounted(() => {
     initTags();
     addTags();
+    moveToCurrentTag();
 });
 
-function isActive(r: any): boolean {
-    return r.path === route.path;
-}
-
-function activeStyle(tag: any): Record<string, string> {
+function activeStyle(tag: Tag): Record<string, string> {
     if (!isActive(tag)) return {};
     return {
         'background-color': theme.value,
         'border-color': theme.value,
     };
+}
+
+function isActive(t: Tag): boolean {
+    return t.name === route.meta.title;
 }
 
 function isAffix(tag: any): boolean {
@@ -114,13 +118,24 @@ function isLastView(): boolean {
     }
 }
 
-function filterAffixTags(routes: any[]): any[] {
+/**
+ * 初始化标签
+ */
+function initTags(): void {
+    const res = filterAffixTags(routes.value);
+    affixTags.value = res;
+    for (const tag of res) {
+        useTagsStore().addVisitedTag(tag);
+    }
+}
+
+function filterAffixTags(routes: RouteRecordRaw[]): Tag[] {
     const tags: Tag[] = [];
     routes.forEach((route) => {
         if (route.meta && route.meta.affix) {
             tags.push({
-                path: route.path,
-                name: route.meta.title || 'no-name',
+                path: route.meta.fullPath,
+                name: route.meta.title,
                 meta: { ...route.meta },
             });
         }
@@ -134,26 +149,22 @@ function filterAffixTags(routes: any[]): any[] {
     return tags;
 }
 
-function initTags(): void {
-    const res = filterAffixTags(routes.value);
-    affixTags.value = res;
-    for (const tag of res) {
-        useTagsStore().addVisitedTag(tag);
-    }
-}
-
 function addTags(): void {
     const { name } = route;
     if (name) {
-        // useTagsStore().addTag({name: route});
+        useTagsStore().addTag({
+            path: route.meta.fullPath,
+            name: route.meta.title,
+            meta: { ...route.meta },
+        });
     }
 }
 
 function moveToCurrentTag(): void {
     nextTick(() => {
         for (const r of visitedViews.value) {
-            if (r.path === route.path) {
-                scrollPaneRef.value.moveToTarget(r);
+            if (r.meta.title === route.meta.title) {
+                scrollPaneRef.value!.moveToTarget(r.meta.title!);
             }
         }
     });
@@ -223,7 +234,7 @@ function toLastView(visitedViews: any[], view?: any): void {
 }
 
 function openMenu(tag: any, e: MouseEvent): void {
-    const el = tagsRefs.value[tag.path].$el;
+    const el = tagsRefs.value[tag.path].$el as HTMLElement;
     
     const offsetLeft = el.getBoundingClientRect().left; // container margin left
     const l = offsetLeft + 15; // 15: margin right

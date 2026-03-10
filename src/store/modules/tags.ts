@@ -23,13 +23,13 @@ const useTagsStore = defineStore('tags', {
         },
 
         addVisitedTag(tag: Tag) {
-            if (this.visitedTags.some((v) => v.path === tag.path)) return;
+            if (this.visitedTags.some((v) => v.name === tag.name)) return;
             this.visitedTags.push(tag);
         },
 
         addCachedTag(tag: any) {
             if (this.cachedTags.includes(tag.name)) return;
-            if (!tag.meta?.noCache) {
+            if (!tag.meta.noCache) {
                 this.cachedTags.push(tag.name);
             }
         },

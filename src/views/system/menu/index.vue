@@ -314,7 +314,7 @@ import IconSelect from '@/components/IconSelect/index.vue';
 import type { SysMenu, MenuQueryParams } from '@/types/api/menu';
 import modal from '@/plugins/modal';
 
-import { FormInstance } from 'element-plus';
+import type { FormInstance } from 'element-plus';
 const menuRef = useTemplateRef<FormInstance>('menuRef');
 const queryRef = useTemplateRef<FormInstance>('queryRef');
 
