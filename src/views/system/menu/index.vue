@@ -10,16 +10,6 @@
                     @keyup.enter="handleQuery"
                 />
             </el-form-item>
-            <!-- <el-form-item label="状态" prop="status">
-                <el-select v-model="queryParams.status" placeholder="菜单状态" clearable style="width: 200px">
-                    <el-option
-                        v-for="dict in sys_normal_disable"
-                        :key="dict.value"
-                        :label="dict.label"
-                        :value="dict.value"
-                    />
-                </el-select>
-            </el-form-item> -->
             <el-form-item>
                 <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
                 <el-button icon="Refresh" @click="resetQuery">重置</el-button>

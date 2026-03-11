@@ -37,16 +37,16 @@
             :default-expand-all="isExpandAll"
             :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
         >
-            <el-table-column prop="deptName" label="部门名称" width="260"></el-table-column>
+            <el-table-column prop="deptName" label="部门名称" width="200"></el-table-column>
+            <el-table-column prop="phone" label="联系电话" width="200"></el-table-column>
+            <el-table-column prop="email" label="邮箱" width="200"></el-table-column>
+            <el-table-column prop="leader" label="负责人" width="200"></el-table-column>
             <el-table-column prop="status" label="状态" width="100">
                 <template #default="scope">
                     <el-tag type="info" v-if="scope.row.status" size="small">停用</el-tag>
                     <el-tag type="primary" v-else size="small">正常</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="phone" label="联系电话" width="260"></el-table-column>
-            <el-table-column prop="email" label="邮箱" width="260"></el-table-column>
-            <el-table-column prop="leader" label="负责人" width="260"></el-table-column>
             <el-table-column prop="remark" label="备注"></el-table-column>
             <el-table-column prop="orderNum" label="排序" width="100"></el-table-column>
             <el-table-column label="操作" align="center" class-name="small-padding" width="210">
@@ -118,6 +118,11 @@
                                 <el-radio :value="false">正常</el-radio>
                                 <el-radio :value="true">停用</el-radio>
                             </el-radio-group>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="24">
+                        <el-form-item label="备注" prop="remark">
+                            <el-input v-model="form.remark" type="textarea" placeholder="请输入内容" />
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -194,6 +199,7 @@ function reset() {
         phone: undefined,
         email: undefined,
         status: false,
+        remark: undefined,
     };
     deptRef.value?.resetFields();
 }
