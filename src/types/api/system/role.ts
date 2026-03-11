@@ -41,7 +41,7 @@ export interface SysRole extends BaseEntity {
     /** 角色权限 */
     roleKey?: string;
     /** 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限；5：仅本人数据权限） */
-    dataScope?: '1' | '2' | '3' | '4' | '5';
+    dataRole?: string;
     /** 菜单树选择项是否关联显示 */
     menuCheckStrictly?: boolean;
     /** 部门树选择项是否关联显示 */

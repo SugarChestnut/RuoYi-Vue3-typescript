@@ -9,7 +9,7 @@ export interface Result<T = any> {
     data: T;
 }
 
-/** API 表格响应类型 */
+/** 分页响应数据对象 */
 export interface SysPage<T = any> {
     size: number;
     total: number;
@@ -19,7 +19,7 @@ export interface SysPage<T = any> {
     records: T[];
 }
 
-/** 分页参数类型 */
+/** 分页请求 */
 export interface PageDomain {
     /** 当前记录起始索引 */
     pageNum?: number;

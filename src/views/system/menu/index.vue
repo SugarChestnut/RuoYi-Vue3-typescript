@@ -51,7 +51,6 @@
                     <svg-icon :icon-class="scope.row.icon" />
                 </template>
             </el-table-column>
-            <el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
             <el-table-column prop="menuType" label="菜单类型" width="100">
                 <template #default="scope">
                     <el-tag type="primary" v-if="scope.row.menuType === 'M'">目录</el-tag>
@@ -66,7 +65,8 @@
                     <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
                 </template>
             </el-table-column> -->
-            <el-table-column label="操作" align="center" width="210">
+            <el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
+            <el-table-column label="操作" align="center" width="210" class-name="small-padding">
                 <template #default="scope">
                     <el-button size="small" @click="handleEdit(scope.row)" v-hasPermi="['system:menu:edit']" icon="Edit"
                         >修改</el-button
@@ -354,7 +354,7 @@ function getList() {
 
 /** 查询菜单下拉树结构 */
 function getTreeselect(menus: SysMenu[]) {
-    if (form.value.parentId === undefined) {
+    if (form.value.menuId === undefined) {
         return menus;
     }
     menus.forEach((item) => {

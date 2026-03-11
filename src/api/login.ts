@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import type { SysRegister, LoginInfoResult, UserInfoResult, CaptchaInfoResult, Result } from '@/types';
+import type { SysRegister, UserInfoResult, CaptchaInfoResult, Result } from '@/types';
 
 // 登录方法
 export function login(username: string, password: string, code?: string, uuid?: string): Promise<Result<string>> {

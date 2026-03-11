@@ -10,11 +10,11 @@ export * from './login';
 export * from './system/user';
 export * from './system/role';
 export * from './system/menu';
-export * from './dept';
-export * from './post';
-export * from './dict';
+export * from './system/dept';
+export * from './system/post';
 export * from './config';
 export * from './notice';
+export * from './option'
 
 // monitor 模块
 export * from './monitor/cache';
