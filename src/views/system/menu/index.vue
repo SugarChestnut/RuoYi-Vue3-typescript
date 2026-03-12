@@ -56,19 +56,26 @@
                 </template>
             </el-table-column> -->
             <el-table-column prop="orderNum" label="排序" width="60"></el-table-column>
-            <el-table-column label="操作" align="center" width="210" class-name="small-padding">
+            <el-table-column label="操作" align="center" width="200" class-name="small-padding">
                 <template #default="scope">
-                    <el-button size="small" @click="handleEdit(scope.row)" v-hasPermi="['system:menu:edit']" icon="Edit"
-                        >修改</el-button
-                    >
-                    <el-button
-                        size="small"
-                        type="danger"
-                        @click="handleDelete(scope.row)"
-                        v-hasPermi="['system:menu:remove']"
-                        icon="Delete"
-                        >删除</el-button
-                    >
+                    <el-tooltip content="修改" placement="top">
+                        <el-button
+                            link
+                            type="primary"
+                            icon="Edit"
+                            @click="handleEdit(scope.row)"
+                            v-hasPermi="['system:menu:edit']"
+                        ></el-button>
+                    </el-tooltip>
+                    <el-tooltip content="删除" placement="top">
+                        <el-button
+                            link
+                            type="danger"
+                            icon="Delete"
+                            @click="handleDelete(scope.row)"
+                            v-hasPermi="['system:menu:delete']"
+                        ></el-button>
+                    </el-tooltip>
                 </template>
             </el-table-column>
         </el-table>

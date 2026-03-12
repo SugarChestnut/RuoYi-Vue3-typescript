@@ -62,7 +62,7 @@
 
 <script setup lang="ts" name="SelectUser">
 import { authUserSelectAll, unallocatedUserList } from "@/api/system/role"
-import type { SysUser, UserQueryParams } from '@/types/api/user'
+import type { SysUser, UserQueryParams } from '@/types/api/system/user'
 
 const props = defineProps({
   roleId: {

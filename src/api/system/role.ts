@@ -19,19 +19,25 @@ export function listRole(data: RoleQueryParams): Promise<Result<SysPage<SysRole>
         data: data,
     });
 }
-
-// 查询角色详细
-export function getRole(roleId: number): Promise<Result<SysRole>> {
+// 查询角色分配的菜单ID列表
+export function getRoleMenu(roleId: number): Promise<Result<number[]>> {
     return request({
-        url: '/system/role/' + roleId,
+        url: '/system/role/menu/' + roleId,
+        method: 'get',
+    });
+}
+// 查询角色分配的部门ID列表
+export function getRoleDept(roleId: number): Promise<Result<number[]>> {
+    return request({
+        url: '/system/role/dept/' + roleId,
         method: 'get',
     });
 }
 
 // 新增角色
-export function addRole(data: SysRole): Promise<Result> {
+export function createRole(data: SysRole): Promise<Result> {
     return request({
-        url: '/system/role',
+        url: '/system/role/create',
         method: 'post',
         data: data,
     });
@@ -40,17 +46,8 @@ export function addRole(data: SysRole): Promise<Result> {
 // 修改角色
 export function updateRole(data: SysRole): Promise<Result> {
     return request({
-        url: '/system/role',
-        method: 'put',
-        data: data,
-    });
-}
-
-// 角色数据权限
-export function dataScope(data: SysRole): Promise<Result> {
-    return request({
-        url: '/system/role/dataScope',
-        method: 'put',
+        url: '/system/role/update',
+        method: 'post',
         data: data,
     });
 }
@@ -69,10 +66,18 @@ export function changeRoleStatus(roleId: number, status: boolean): Promise<Resul
 }
 
 // 删除角色
-export function delRole(roleId: number | number[]): Promise<Result> {
+export function delRole(roleId: number): Promise<Result> {
+    return request({
+        url: '/system/role/delete/' + roleId,
+        method: 'get',
+    });
+}
+
+// 查询角色详细
+export function getRole(roleId: number): Promise<Result<SysRole>> {
     return request({
         url: '/system/role/' + roleId,
-        method: 'delete',
+        method: 'get',
     });
 }
 

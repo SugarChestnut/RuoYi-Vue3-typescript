@@ -43,18 +43,6 @@ export interface BaseEntity {
     remark?: string;
 }
 
-/** Treeselect树结构类型 */
-export interface TreeSelect {
-    /** 节点ID */
-    id?: number;
-    /** 节点名称 */
-    label?: string;
-    /** 节点禁用 */
-    disabled: boolean;
-    /** 子节点 */
-    children: TreeSelect[];
-}
-
 /** 显隐列信息 */
 export interface TableShowColumns {
     // 显示名称

@@ -45,24 +45,26 @@
             </el-table-column>
             <el-table-column label="备注" prop="remark" />
             <el-table-column label="岗位排序" align="center" prop="orderNum" width="120" />
-            <el-table-column label="操作" width="180" align="center" class-name="small-padding">
+            <el-table-column label="操作" width="200" align="center" class-name="small-padding">
                 <template #default="scope">
-                    <el-button
-                        size="small"
-                        type="primary"
-                        @click="handleEdit(scope.row)"
-                        v-hasPermi="['system:dept:edit']"
-                        icon="Edit"
-                        >修改</el-button
-                    >
-                    <el-button
-                        size="small"
-                        type="danger"
-                        @click="handleDelete(scope.row)"
-                        v-hasPermi="['system:dept:remove']"
-                        icon="Delete"
-                        >删除</el-button
-                    >
+                    <el-tooltip content="修改" placement="top">
+                        <el-button
+                            link
+                            type="primary"
+                            icon="Edit"
+                            @click="handleEdit(scope.row)"
+                            v-hasPermi="['system:post:edit']"
+                        ></el-button>
+                    </el-tooltip>
+                    <el-tooltip content="删除" placement="top">
+                        <el-button
+                            link
+                            type="danger"
+                            icon="Delete"
+                            @click="handleDelete(scope.row)"
+                            v-hasPermi="['system:post:delete']"
+                        ></el-button>
+                    </el-tooltip>
                 </template>
             </el-table-column>
         </el-table>
@@ -137,8 +139,7 @@ const data = reactive({
     } as PostQueryParams,
     rules: {
         postName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }],
-        postCode: [{ required: true, message: '岗位编码不能为空', trigger: 'blur' }],
-        postSort: [{ required: true, message: '岗位顺序不能为空', trigger: 'blur' }],
+        postCode: [{ required: true, message: '岗位编码不能为空', trigger: 'blur' }]
     },
 });
 
@@ -195,7 +196,7 @@ function handleAdd() {
 /** 修改按钮操作 */
 function handleEdit(row: SysPost) {
     reset();
-    form.value = row;
+    form.value = {...row};
     open.value = true;
     title.value = '修改岗位';
 }
@@ -237,6 +238,6 @@ function handleDelete(row?: SysPost) {
 }
 
 onMounted(() => {
-    // getList();
+    getList();
 });
 </script>

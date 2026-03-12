@@ -49,24 +49,26 @@
             </el-table-column>
             <el-table-column prop="remark" label="备注"></el-table-column>
             <el-table-column prop="orderNum" label="排序" width="100"></el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding" width="210">
+            <el-table-column label="操作" align="center" class-name="small-padding" width="200">
                 <template #default="scope">
-                    <el-button
-                        size="small"
-                        type="primary"
-                        @click="handleEdit(scope.row)"
-                        v-hasPermi="['system:dept:edit']"
-                        icon="Edit"
-                        >修改</el-button
-                    >
-                    <el-button
-                        size="small"
-                        type="danger"
-                        @click="handleDelete(scope.row)"
-                        v-hasPermi="['system:dept:remove']"
-                        icon="Delete"
-                        >删除</el-button
-                    >
+                    <el-tooltip content="修改" placement="top">
+                        <el-button
+                            link
+                            type="primary"
+                            icon="Edit"
+                            @click="handleEdit(scope.row)"
+                            v-hasPermi="['system:dept:edit']"
+                        ></el-button>
+                    </el-tooltip>
+                    <el-tooltip content="删除" placement="top">
+                        <el-button
+                            link
+                            type="danger"
+                            icon="Delete"
+                            @click="handleDelete(scope.row)"
+                            v-hasPermi="['system:dept:delete']"
+                        ></el-button>
+                    </el-tooltip>
                 </template>
             </el-table-column>
         </el-table>
@@ -138,9 +140,8 @@
 </template>
 
 <script setup lang="ts" name="Dept">
-import { listDept, getDept, delDept, createDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
+import { listDept, delDept, createDept, updateDept } from '@/api/system/dept';
 import type { SysDept, DeptQueryParams } from '@/types';
-import type { TreeSelect } from '@/types/api/common';
 import modal from '@/plugins/modal';
 import { validateEmail } from '@/utils/email';
 
@@ -176,7 +177,6 @@ const { queryParams, form, rules } = toRefs(data);
 function getList() {
     loading.value = true;
     listDept(queryParams.value).then((res) => {
-        console.log(res);
         deptList.value = res.data;
         loading.value = false;
     });

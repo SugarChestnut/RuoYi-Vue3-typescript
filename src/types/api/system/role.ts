@@ -1,4 +1,5 @@
-import type { PageDomain, BaseEntity, Result, TreeSelect } from '../common';
+import type { PageDomain, BaseEntity } from '../common';
+import { SysDept } from './dept';
 
 /** 角色分页查询参数 */
 export interface RoleQueryParams extends PageDomain {
@@ -41,23 +42,19 @@ export interface SysRole extends BaseEntity {
     /** 角色权限 */
     roleKey?: string;
     /** 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限；5：仅本人数据权限） */
-    dataRole?: string;
-    /** 菜单树选择项是否关联显示 */
-    menuCheckStrictly?: boolean;
-    /** 部门树选择项是否关联显示 */
-    deptCheckStrictly?: boolean;
-    /** 角色权限 */
+    dataScope?: string;
+    /** 菜单ID列表 */
     menuIds?: number[];
-    /** 角色权限 */
+    /** 部门ID列表 */
     deptIds?: number[];
     /** 状态（0正常 1停用） */
     status?: boolean;
 }
 
 /** 角色部门树响应 */
-export interface RoleDeptTreeResult extends Result {
+export interface RoleDept {
     /** 选中部门ID */
     checkedKeys: number[];
     /** 部门树列表 */
-    depts: TreeSelect[];
+    deptTree: SysDept[];
 }
