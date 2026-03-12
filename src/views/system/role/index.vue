@@ -175,10 +175,9 @@ import {
     getRoleMenu,
     getRoleDept,
 } from '@/api/system/role';
-import { roleMenuTreeselect, getTree as getMenuTree } from '@/api/system/menu';
+import { getTree as getMenuTree } from '@/api/system/menu';
 import { listDept } from '@/api/system/dept';
 import type { SysRole, RoleQueryParams } from '@/types/api/system/role';
-import type { RoleDeptTreeResult } from '@/types/api/system/role';
 import type { SysMenu, SysDept, Option } from '@/types';
 import modal from '@/plugins/modal';
 import { getDataScope } from '@/api/system/option';
@@ -260,7 +259,7 @@ function handleDelete(row: SysRole) {
 function handleStatusChange(row: SysRole) {
     const text = row.status ? '停用' : '启用';
     modal
-        .confirm('确认要"' + text + '""' + row.roleName + '"角色吗?')
+        .confirm('确认要' + text + '"' + row.roleName + '"角色吗?')
         .then(function () {
             return changeRoleStatus(row.roleId!, row.status!);
         })
@@ -274,6 +273,7 @@ function handleStatusChange(row: SysRole) {
 
 /** 分配用户 */
 function handleAuthUser(row: SysRole) {
+    console.log(router.getRoutes());
     router.push('/system/role-auth/user/' + row.roleId);
 }
 
@@ -320,9 +320,10 @@ function dataScopeSelectChange(value: string) {
 
 /** 修改角色 */
 async function handleEdit(row: SysRole) {
+    console.log(row);
     reset();
     form.value = {...row};
-    getMenuTree({}).then((res) => {
+    await getMenuTree({}).then((res) => {
         menuOptions.value = res.data;
     });
     await getDataScope<string>().then((res) => {
@@ -341,11 +342,15 @@ async function handleEdit(row: SysRole) {
     });
 
     if (row.dataScope && row.dataScope === '2') {
+        await listDept({}).then((res) => {
+            deptOptions.value = res.data;
+        });
         // 获取角色分配部门
         getRoleDept(row.roleId!).then((res) => {
             nextTick(() => {
                 res.data.forEach((v) => {
                     nextTick(() => {
+                        deptRef.value!.store.nodesMap[v].expanded = true;
                         deptRef.value?.setChecked(v, true, false);
                     });
                 });

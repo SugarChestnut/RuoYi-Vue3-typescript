@@ -1,29 +1,22 @@
-import type { SysRole } from './system/role';
+import type { SysRole } from './role';
 import type { SysDept } from './dept';
 import type { SysPost } from './post';
-import type { PageDomain, Result, BaseEntity } from './common';
+import type { PageDomain, Result, BaseEntity } from '../common';
 
 /** 用户分页查询参数 */
 export interface UserQueryParams extends PageDomain {
     /** 用户名称 */
     userName?: string;
     /** 手机号码 */
-    phonenumber?: string;
-    /** 状态（0正常 1停用） */
-    status?: '0' | '1';
+    mobile?: string;
     /** 部门编号 */
     deptId?: number;
-    /** 创建时间 */
-    params?: {
-        beginTime?: string;
-        endTime?: string;
-    };
 }
 
 /** 角色授权用户分页查询参数 */
 export interface AuthUserQueryParams extends UserQueryParams {
     /** 角色编号 */
-    roleId?: number;
+    roleId: number;
 }
 
 /** 用户信息 */
