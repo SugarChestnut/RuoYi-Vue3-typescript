@@ -472,4 +472,8 @@ function handleDelete(row: SysMenu) {
 onMounted(() => {
     getList();
 });
+
+defineOptions({
+    name: 'Menu',
+});
 </script>

@@ -291,4 +291,8 @@ function handleDelete(row: SysDept) {
 onMounted(() => {
     getList();
 });
+
+defineOptions({
+    name: 'Dept',
+});
 </script>

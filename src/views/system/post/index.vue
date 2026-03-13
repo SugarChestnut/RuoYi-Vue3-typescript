@@ -240,4 +240,8 @@ function handleDelete(row?: SysPost) {
 onMounted(() => {
     getList();
 });
+
+defineOptions({
+    name: 'Post',
+});
 </script>

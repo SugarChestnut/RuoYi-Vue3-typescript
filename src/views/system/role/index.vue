@@ -413,4 +413,8 @@ function cancel() {
 onMounted(() => {
     getList();
 });
+
+defineOptions({
+    name: 'Role',
+});
 </script>

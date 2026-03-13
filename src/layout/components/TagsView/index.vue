@@ -2,18 +2,18 @@
     <div id="tags-view-container" class="tags-view-container">
         <scroll-pane ref="scrollPaneRef" class="tags-view-wrapper" @scroll="handleScroll">
             <router-link
-                v-for="tag in visitedViews"
-                :key="tag.path"
+                v-for="tag in visitedTags"
+                :key="tag.name"
                 :data-path="tag.path"
                 :class="{ active: isActive(tag), 'has-icon': tagsIcon }"
-                :to="{ path: tag.path, query: tag.meta.query }"
+                :to="{ path: tag.meta.fullPath!, query: tag.meta.query }"
                 class="tags-view-item"
                 :style="activeStyle(tag)"
                 @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
                 @contextmenu.prevent="openMenu(tag, $event)"
                 :ref="
                     (el) => {
-                        if (el) tagsRefs[tag.name!] = el;
+                        if (el) tagsRefs[tag.path!] = el;
                     }
                 "
             >
@@ -21,7 +21,7 @@
                     v-if="tagsIcon && tag.meta && tag.meta.icon && tag.meta.icon !== '#'"
                     :icon-class="tag.meta.icon"
                 />
-                {{ tag.name }}
+                {{ tag.meta.title || tag.name }}
                 <span v-if="!isAffix(tag)" @click.prevent.stop="closeSelectedTag(tag)">
                     <close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: -2px;" />
                 </span>
@@ -62,13 +62,13 @@ const affixTags = ref<any[]>([]);
 const route = useRoute();
 const router = useRouter();
 
-const visitedViews = computed(() => useTagsStore().visitedTags);
+const visitedTags = computed(() => useTagsStore().visitedTags);
 const routes = computed(() => useRouteStore().routes);
 const theme = computed(() => useSettingsStore().theme);
 const tagsIcon = computed(() => useSettingsStore().tagsIcon);
 
 watch(route, () => {
-    addTags();
+    addTag();
     // moveToCurrentTag();
 });
 
@@ -82,7 +82,7 @@ watch(visible, (value: boolean) => {
 
 onMounted(() => {
     initTags();
-    addTags();
+    addTag();
     moveToCurrentTag();
 });
 
@@ -95,7 +95,7 @@ function activeStyle(tag: Tag): Record<string, string> {
 }
 
 function isActive(t: Tag): boolean {
-    return t.name === route.meta.title;
+    return t.name === route.name;
 }
 
 function isAffix(tag: any): boolean {
@@ -104,7 +104,7 @@ function isAffix(tag: any): boolean {
 
 function isFirstView(): boolean {
     try {
-        return selectedTag.value.path === '/index' || selectedTag.value.path === visitedViews.value[1].path;
+        return selectedTag.value.meta.fullPath === '/index' || selectedTag.value.name === visitedTags.value[1].name;
     } catch (err) {
         return false;
     }
@@ -112,7 +112,7 @@ function isFirstView(): boolean {
 
 function isLastView(): boolean {
     try {
-        return selectedTag.value.path === visitedViews.value[visitedViews.value.length - 1].path;
+        return selectedTag.value.name === visitedTags.value[visitedTags.value.length - 1].name;
     } catch (err) {
         return false;
     }
@@ -132,10 +132,10 @@ function initTags(): void {
 function filterAffixTags(routes: RouteRecordRaw[]): Tag[] {
     const tags: Tag[] = [];
     routes.forEach((route) => {
-        if (route.meta && route.meta.affix) {
+        if (route.name && route.meta && route.meta.affix) {
             tags.push({
-                path: route.meta.fullPath,
-                name: route.meta.title,
+                path: route.path,
+                name: route.name as string,
                 meta: { ...route.meta },
             });
         }
@@ -149,12 +149,12 @@ function filterAffixTags(routes: RouteRecordRaw[]): Tag[] {
     return tags;
 }
 
-function addTags(): void {
+function addTag(): void {
     const { name } = route;
     if (name) {
         useTagsStore().addTag({
-            path: route.meta.fullPath,
-            name: route.meta.title,
+            path: route.path,
+            name: name as string,
             meta: { ...route.meta },
         });
     }
@@ -162,9 +162,9 @@ function addTags(): void {
 
 function moveToCurrentTag(): void {
     nextTick(() => {
-        for (const r of visitedViews.value) {
-            if (r.meta.title === route.meta.title) {
-                scrollPaneRef.value!.moveToTarget(r.meta.title!);
+        for (const t of visitedTags.value) {
+            if (t.name === route.name) {
+                scrollPaneRef.value!.moveToTarget(t.name!);
             }
         }
     });
@@ -177,26 +177,26 @@ function refreshSelectedTag(view: any): void {
     }
 }
 
-function closeSelectedTag(view: any): void {
-    tab.closePage(view).then(({ visitedViews }: any) => {
-        if (isActive(view)) {
-            toLastView(visitedViews, view);
+function closeSelectedTag(tag: Tag): void {
+    tab.closePage(tag).then(({ visitedTags }: any) => {
+        if (isActive(tag)) {
+            toLastTag(visitedTags, tag);
         }
     });
 }
 
 function closeRightTags(): void {
-    tab.closeRightPage(selectedTag.value).then((visitedViews: any) => {
-        if (!visitedViews.find((i: any) => i.fullPath === route.fullPath)) {
-            toLastView(visitedViews);
+    tab.closeRightPage(selectedTag.value).then((visitedTags: any) => {
+        if (!visitedTags.find((i: any) => i.name === route.name)) {
+            toLastTag(visitedTags);
         }
     });
 }
 
 function closeLeftTags(): void {
-    tab.closeLeftPage(selectedTag.value).then((visitedViews: any) => {
-        if (!visitedViews.find((i: any) => i.fullPath === route.fullPath)) {
-            toLastView(visitedViews);
+    tab.closeLeftPage(selectedTag.value).then((visitedTags: any) => {
+        if (!visitedTags.find((i: any) => i.name === route.name)) {
+            toLastTag(visitedTags);
         }
     });
 }
@@ -208,25 +208,25 @@ function closeOthersTags(): void {
     });
 }
 
-function closeAllTags(view: any): void {
-    tab.closeAllPage().then(({ visitedViews }: any) => {
-        if (affixTags.value.some((tag: any) => tag.path === route.path)) {
+function closeAllTags(tag: Tag): void {
+    tab.closeAllPage().then(({ visitedTags }: any) => {
+        if (affixTags.value.some((t: any) => t.name === route.name)) {
             return;
         }
-        toLastView(visitedViews, view);
+        toLastTag(visitedTags, tag);
     });
 }
 
-function toLastView(visitedViews: any[], view?: any): void {
-    const latestView = visitedViews.slice(-1)[0];
-    if (latestView) {
-        router.push(latestView.fullPath);
+function toLastTag(visitedTags: Tag[], tag?: any): void {
+    const latestTag = visitedTags.slice(-1)[0];
+    if (latestTag) {
+        router.push(latestTag.path!);
     } else {
         // now the default is to redirect to the home page if there is no tags-view,
         // you can adjust it according to your needs.
-        if (view && view.name === 'Dashboard') {
+        if (tag && tag.name === 'Dashboard') {
             // to reload home page
-            router.replace({ path: '/redirect' + view.fullPath });
+            router.replace({ path: '/redirect' + tag.fullPath });
         } else {
             router.push('/');
         }

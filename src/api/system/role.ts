@@ -7,7 +7,6 @@ import type {
     SysUserRole,
     AuthUserSelectParams,
     Result,
-    RoleDeptTreeResult,
     SysPage,
 } from '@/types';
 

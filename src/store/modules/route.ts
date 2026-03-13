@@ -78,7 +78,6 @@ function filterChildren(menus?: SysMenu[], lateMenu: any = false): RouteRecordRa
                     hiddern: menu.hidden,
                     permission: menu.permission,
                     icon: menu.icon,
-                    hidden: false,
                 },
             });
         });

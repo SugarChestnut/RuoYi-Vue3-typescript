@@ -1,13 +1,14 @@
 export interface Tag {
-    name?: string;
-    path?: string;
+    name: string;
+    path: string;
     meta: TagMeta;
 }
 
 export interface TagMeta {
     title?: string;
-    noCache?: boolean;
+    isCache?: boolean;
     affix?: boolean;
+    fullPath?: string;
     link?: string;
     [key: string]: any;
 }

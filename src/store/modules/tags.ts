@@ -29,7 +29,7 @@ const useTagsStore = defineStore('tags', {
 
         addCachedTag(tag: any) {
             if (this.cachedTags.includes(tag.name)) return;
-            if (!tag.meta.noCache) {
+            if (tag.meta.isCache) {
                 this.cachedTags.push(tag.name);
             }
         },
