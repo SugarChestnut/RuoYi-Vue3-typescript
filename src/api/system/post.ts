@@ -4,17 +4,9 @@ import type { PostQueryParams, SysPost, Result, SysPage } from '@/types';
 // 查询岗位列表
 export function listPost(data: PostQueryParams): Promise<Result<SysPage<SysPost>>> {
     return request({
-        url: '/system/post/list',
+        url: '/system/post/search',
         method: 'post',
         data: data,
-    });
-}
-
-// 查询岗位详细
-export function getPost(postId: number): Promise<Result<SysPost>> {
-    return request({
-        url: '/system/post/' + postId,
-        method: 'get',
     });
 }
 

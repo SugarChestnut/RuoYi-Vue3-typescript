@@ -41,7 +41,7 @@
             <el-table-column prop="phone" label="联系电话" width="200"></el-table-column>
             <el-table-column prop="email" label="邮箱" width="200"></el-table-column>
             <el-table-column prop="leader" label="负责人" width="200"></el-table-column>
-            <el-table-column prop="status" label="状态" width="100">
+            <el-table-column prop="status" label="状态" width="100" align="center">
                 <template #default="scope">
                     <el-tag type="info" v-if="scope.row.status" size="small">停用</el-tag>
                     <el-tag type="primary" v-else size="small">正常</el-tag>
@@ -49,7 +49,7 @@
             </el-table-column>
             <el-table-column prop="remark" label="备注"></el-table-column>
             <el-table-column prop="orderNum" label="排序" width="100"></el-table-column>
-            <el-table-column label="操作" align="center" class-name="small-padding" width="200">
+            <el-table-column label="操作" align="center" class-name="small-padding" width="150">
                 <template #default="scope">
                     <el-tooltip content="修改" placement="top">
                         <el-button
@@ -100,8 +100,24 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="负责人" prop="leader">
-                            <el-input v-model="form.leader" placeholder="请输入负责人" maxlength="20" />
+                        <el-form-item label="负责人" prop="leaderId">
+                            <el-select
+                                v-model="form.leaderId"
+                                filterable
+                                remote
+                                reserve-keyword
+                                placeholder="请输入负责人"
+                                :remote-method="handleUserSelect"
+                                :loading="loading"
+                                style="width: 240px"
+                            >
+                                <el-option
+                                    v-for="user in userOptions"
+                                    :key="user.userId"
+                                    :label="user.username"
+                                    :value="user.userId!"
+                                />
+                            </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
@@ -117,8 +133,8 @@
                     <el-col :span="12">
                         <el-form-item label="部门状态">
                             <el-radio-group v-model="form.status">
-                                <el-radio :value="false">正常</el-radio>
-                                <el-radio :value="true">停用</el-radio>
+                                <el-radio :value="0">正常</el-radio>
+                                <el-radio :value="1">停用</el-radio>
                             </el-radio-group>
                         </el-form-item>
                     </el-col>
@@ -141,7 +157,8 @@
 
 <script setup lang="ts" name="Dept">
 import { listDept, delDept, createDept, updateDept } from '@/api/system/dept';
-import type { SysDept, DeptQueryParams } from '@/types';
+import { listUser } from '@/api/system/user';
+import type { SysDept, DeptQueryParams, SysUser } from '@/types';
 import modal from '@/plugins/modal';
 import { validateEmail } from '@/utils/email';
 
@@ -157,6 +174,7 @@ const title = ref<string>('');
 const deptOptions = ref<SysDept[]>([]);
 const isExpandAll = ref<boolean>(false);
 const refreshTable = ref<boolean>(true);
+const userOptions = ref<SysUser[]>([]);
 
 const data = reactive({
     form: {} as SysDept,
@@ -198,7 +216,7 @@ function reset() {
         leader: undefined,
         phone: undefined,
         email: undefined,
-        status: false,
+        status: 0,
         remark: undefined,
     };
     deptRef.value?.resetFields();
@@ -213,6 +231,12 @@ function handleQuery() {
 function resetQuery() {
     queryRef.value?.resetFields();
     handleQuery();
+}
+
+function handleUserSelect(query: string) {
+    listUser({ username: query, pageNum: 1, pageSize: 10 }).then((res) => {
+        userOptions.value = res.data.records || [];
+    });
 }
 
 /** 新增按钮操作 */

@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import type { MenuQueryParams, SysMenu, TreeSelect, Result, RoleMenuTreeselectResult } from '@/types';
+import type { MenuQueryParams, SysMenu, Result } from '@/types';
 
 // 新增菜单
 export function createMenu(data: SysMenu): Promise<Result> {

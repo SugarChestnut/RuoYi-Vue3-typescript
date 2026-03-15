@@ -1,5 +1,10 @@
 // cover some element-ui styles
 
+/* 覆盖 el-tree 节点高亮背景色 */
+.el-tree-node.is-current > .el-tree-node__content {
+  background-color: #c6c9cc !important;
+}
+
 .el-breadcrumb__inner,
 .el-breadcrumb__inner a {
     font-weight: 400 !important;

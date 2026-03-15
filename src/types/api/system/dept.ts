@@ -5,7 +5,7 @@ export interface DeptQueryParams {
     /** 部门名称 */
     deptName?: string;
     /** 状态 */
-    status?: string;
+    status?: boolean;
 }
 
 /** 部门信息 */
@@ -27,8 +27,9 @@ export interface SysDept extends BaseEntity {
     /** 邮箱 */
     email?: string;
     /** 状态（false正常 true停用） */
-    status?: boolean;
+    status?: number;
 
     children?: SysDept[];
+    
     leader?: string;
 }

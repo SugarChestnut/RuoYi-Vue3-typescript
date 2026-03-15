@@ -4,25 +4,9 @@ import type { DeptQueryParams, SysDept, Result } from '@/types';
 // 查询部门列表
 export function listDept(data?: DeptQueryParams): Promise<Result<SysDept[]>> {
     return request({
-        url: '/system/dept/tree',
+        url: '/system/dept/search',
         method: 'post',
         data: data,
-    });
-}
-
-// 查询部门列表（排除节点）
-export function listDeptExcludeChild(deptId: number): Promise<Result<SysDept[]>> {
-    return request({
-        url: '/system/dept/list/exclude/' + deptId,
-        method: 'get',
-    });
-}
-
-// 查询部门详细
-export function getDept(deptId: number): Promise<Result<SysDept>> {
-    return request({
-        url: '/system/dept/' + deptId,
-        method: 'get',
     });
 }
 

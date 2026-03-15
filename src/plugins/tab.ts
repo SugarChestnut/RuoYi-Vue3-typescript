@@ -41,7 +41,7 @@ export default {
                 .then(({ visitedTags }: { visitedTags: Tag[] }) => {
                     const latestView = visitedTags.slice(-1)[0];
                     if (latestView) {
-                        return router.push(latestView.meta.fullPath);
+                        return router.push(latestView.meta.fullPath!);
                     }
                     return router.push('/');
                 });

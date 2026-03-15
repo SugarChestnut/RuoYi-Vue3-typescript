@@ -15,7 +15,7 @@
             >
                 <sidebar-item
                     v-for="(route) in sidebarRouters"
-                    :key="route.meta!.title"
+                    :key="route.name"
                     :item="route"
                 />
             </el-menu>

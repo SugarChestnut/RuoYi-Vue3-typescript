@@ -13,7 +13,7 @@
                 @contextmenu.prevent="openMenu(tag, $event)"
                 :ref="
                     (el) => {
-                        if (el) tagsRefs[tag.path!] = el;
+                        if (el) tagsRefs[tag.name!] = el;
                     }
                 "
             >
@@ -220,13 +220,13 @@ function closeAllTags(tag: Tag): void {
 function toLastTag(visitedTags: Tag[], tag?: any): void {
     const latestTag = visitedTags.slice(-1)[0];
     if (latestTag) {
-        router.push(latestTag.path!);
+        router.push(latestTag.meta.fullPath!);
     } else {
         // now the default is to redirect to the home page if there is no tags-view,
         // you can adjust it according to your needs.
         if (tag && tag.name === 'Dashboard') {
             // to reload home page
-            router.replace({ path: '/redirect' + tag.fullPath });
+            router.replace({ path: '/redirect' + tag.meta.fullPath });
         } else {
             router.push('/');
         }
@@ -234,7 +234,7 @@ function toLastTag(visitedTags: Tag[], tag?: any): void {
 }
 
 function openMenu(tag: any, e: MouseEvent): void {
-    const el = tagsRefs.value[tag.path].$el as HTMLElement;
+    const el = tagsRefs.value[tag.name].$el as HTMLElement;
     
     const offsetLeft = el.getBoundingClientRect().left; // container margin left
     const l = offsetLeft + 15; // 15: margin right

@@ -27,7 +27,7 @@ const useTagsStore = defineStore('tags', {
             this.visitedTags.push(tag);
         },
 
-        addCachedTag(tag: any) {
+        addCachedTag(tag: Tag) {
             if (this.cachedTags.includes(tag.name)) return;
             if (tag.meta.isCache) {
                 this.cachedTags.push(tag.name);

@@ -6,7 +6,7 @@ import type { PageDomain, Result, BaseEntity } from '../common';
 /** 用户分页查询参数 */
 export interface UserQueryParams extends PageDomain {
     /** 用户名称 */
-    userName?: string;
+    username?: string;
     /** 手机号码 */
     mobile?: string;
     /** 部门编号 */
@@ -16,7 +16,11 @@ export interface UserQueryParams extends PageDomain {
 /** 角色授权用户分页查询参数 */
 export interface AuthUserQueryParams extends UserQueryParams {
     /** 角色编号 */
-    roleId: number;
+    roleId?: number;
+    /** 角色名称 */
+    roleName?: string;
+    /** 无角色编号 */
+    noRoleId?: number;
 }
 
 /** 用户信息 */
@@ -34,13 +38,17 @@ export interface SysUser extends BaseEntity {
     /** 用户头像 */
     avatarUrl?: string;
     /** 账号状态（0正常 1停用） */
-    status?: '0' | '1';
+    status?: number;
     /** 角色对象 */
     roles?: SysRole[];
     /** 角色组 */
     roleIds?: number[];
     /** 部门ID */
     deptId?: number;
+    /** 部门名称 */
+    deptName?: string;
+    /** 状态描述 */
+    statusDesc?: string;
 }
 
 /** 注册信息 */

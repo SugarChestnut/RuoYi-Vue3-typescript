@@ -63,11 +63,11 @@ function moveToTarget(name: string): void {
     let nextTag: HTMLElement | null = null;
     for (const k in tagListDom) {
         if (k !== 'length' && Object.hasOwnProperty.call(tagListDom, k)) {
-            if ((tagListDom[k] as HTMLElement).dataset?.path === visitedTags.value[currentIndex - 1].path) {
+            const element = tagListDom[k] as HTMLElement;
+            if (element.dataset?.name === visitedTags.value[currentIndex - 1].name) {
                 prevTag = tagListDom[k] as HTMLElement;
             }
-            const element = tagListDom[k] as HTMLElement;
-            if (element.dataset?.path === visitedTags.value[currentIndex + 1].path) {
+            if (element.dataset?.name === visitedTags.value[currentIndex + 1].name) {
                 nextTag = element;
             }
         }

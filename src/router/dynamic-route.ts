@@ -30,7 +30,7 @@ export const dynamicRoutes: RouteRecordRaw[] = [
         component: Layout,
         children: [
             {
-                path: 'user/:roleId(\\d+)',
+                path: 'user/:roleId(\\d+)/:roleName',
                 component: () => import('@/views/system/role/authUser.vue'),
                 name: 'AuthUser',
                 meta: {

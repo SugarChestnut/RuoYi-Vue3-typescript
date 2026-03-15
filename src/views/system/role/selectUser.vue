@@ -1,43 +1,58 @@
 <template>
     <!-- 授权用户 -->
     <el-dialog title="选择用户" v-model="visible" width="800px" top="5vh" append-to-body>
-        <el-form :model="queryParams" ref="queryRef" :inline="true">
-            <el-form-item label="用户名称" prop="userName">
+        <el-form :model="queryParams" ref="queryUserSelectRef" :inline="true">
+            <el-form-item label="用户名称" prop="username">
                 <el-input
-                    v-model="queryParams.userName"
+                    v-model="queryParams.username"
                     placeholder="请输入用户名称"
                     clearable
+                    size="small"
                     style="width: 180px"
                     @keyup.enter="handleQuery"
                 />
             </el-form-item>
-            <el-form-item label="手机号码" prop="phonenumber">
+            <el-form-item label="手机号码" prop="mobile">
                 <el-input
                     v-model="queryParams.mobile"
                     placeholder="请输入手机号码"
                     clearable
+                    size="small"
                     style="width: 180px"
                     @keyup.enter="handleQuery"
                 />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-                <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+                <el-button type="primary" icon="Search" @click="handleQuery" size="small">搜索</el-button>
+                <el-button icon="Refresh" @click="resetQuery" size="small">重置</el-button>
             </el-form-item>
         </el-form>
+        <el-row :gutter="10" style="margin-bottom: 10px;" class="mb8">
+            <el-col :span="1.5" v-for="user in users" :key="user.userId">
+                <el-tag closable type="primary" @close="handleClose(user)">
+                    {{ user.username }}
+                </el-tag>
+            </el-col>
+            <!-- <div style="margin-bottom: 10px;">
+                <el-tag v-for="user in users" :key="user.userId" closable type="primary" @close="handleClose(user)">
+                    {{ user.username }}
+                </el-tag>
+            </div> -->
+        </el-row>
         <el-row>
             <el-table
                 @row-click="clickRow"
                 ref="refTable"
                 :data="userList"
+                border
                 @selection-change="handleSelectionChange"
                 height="260px"
+                size="small"
             >
                 <el-table-column type="selection" width="55"></el-table-column>
-                <el-table-column label="用户名称" prop="userName" :show-overflow-tooltip="true" />
-                <el-table-column label="用户昵称" prop="nickName" :show-overflow-tooltip="true" />
-                <el-table-column label="邮箱" prop="email" :show-overflow-tooltip="true" />
-                <el-table-column label="手机" prop="phonenumber" :show-overflow-tooltip="true" />
+                <el-table-column label="用户名称" prop="username" :show-overflow-tooltip="true" />
+                <el-table-column label="手机" prop="mobile" :show-overflow-tooltip="true" />
+                <el-table-column label="状态" prop="statusDesc" :show-overflow-tooltip="true" />
                 <!-- <el-table-column label="状态" align="center" prop="status">
                     <template #default="scope">
                         <dict-tag :options="sys_normal_disable" :value="scope.row.status" />
@@ -45,6 +60,7 @@
                 </el-table-column> -->
             </el-table>
             <pagination
+                size="small"
                 v-show="total > 0"
                 :total="total"
                 v-model:page="queryParams.pageNum"
@@ -62,14 +78,15 @@
 </template>
 
 <script setup lang="ts" name="SelectUser">
-import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
-import type { SysUser, UserQueryParams, AuthUserQueryParams } from '@/types/api/system/user';
+import { authUser } from '@/api/system/role';
+import { listUser } from '@/api/system/user';
+import type { SysUser, AuthUserQueryParams } from '@/types/api/system/user';
 import type { SelectUserInstance } from '@/types/component/SelectUser';
 import modal from '@/plugins/modal';
 
 import type { TableInstance, FormInstance } from 'element-plus';
 const refTable = useTemplateRef<TableInstance>('refTable');
-const queryRef = useTemplateRef<FormInstance>('queryRef');
+const queryUserSelectRef = useTemplateRef<FormInstance>('queryUserSelectRef');
 
 const props = defineProps({
     roleId: {
@@ -81,21 +98,19 @@ const props = defineProps({
 const userList = ref<SysUser[]>([]);
 const visible = ref<boolean>(false);
 const total = ref<number>(0);
-const userIds = ref<number[]>([]);
+const users = ref<SysUser[]>([]);
 
 const queryParams = reactive<AuthUserQueryParams>({
     pageNum: 1,
     pageSize: 10,
-    roleId: props.roleId as unknown as number,
-    userName: undefined,
+    noRoleId: props.roleId as unknown as number,
+    username: undefined,
     mobile: undefined,
 });
 
 // 显示弹框
 function show() {
-    // queryParams.roleId = props.roleId as unknown as number;
-    // getList();
-    console.log(queryParams.roleId);
+    getList();
     visible.value = true;
 }
 
@@ -106,14 +121,14 @@ function clickRow(row: SysUser) {
 
 // 多选框选中数据
 function handleSelectionChange(selection: SysUser[]) {
-    userIds.value = selection.map((item) => item.userId!);
+    users.value = selection;
 }
 
 // 查询表数据
 function getList() {
-    unallocatedUserList(queryParams).then((res) => {
-        userList.value = res.rows;
-        total.value = res.total;
+    listUser(queryParams).then((res) => {
+        userList.value = res.data.records;
+        total.value = res.data.total;
     });
 }
 
@@ -125,22 +140,34 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
-    queryRef.value?.resetFields();
+    queryUserSelectRef.value?.resetFields();
     handleQuery();
 }
 
 const emit = defineEmits(['ok']);
+
 /** 选择授权用户操作 */
 function handleSelectUser() {
-    if (userIds.value.length == 0) {
+    if (users.value.length == 0) {
         modal.msgError('请选择要分配的用户');
         return;
     }
-    authUserSelectAll({ roleId: queryParams.roleId, userIds: userIds.value }).then((res) => {
+    authUser({
+        roleId: queryParams.noRoleId!,
+        userIds: users.value.map((item) => item.userId!),
+    }).then((res) => {
         modal.msgSuccess(res.msg);
         visible.value = false;
         emit('ok');
     });
+}
+
+function handleClose(user: SysUser) {
+    const index = users.value.findIndex((u) => u.userId === user.userId);
+    if (index !== -1) {
+        users.value.splice(index, 1);
+    }
+    refTable.value!.toggleRowSelection(user);
 }
 
 defineExpose<SelectUserInstance>({

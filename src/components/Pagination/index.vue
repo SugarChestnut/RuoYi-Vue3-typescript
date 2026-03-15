@@ -1,7 +1,7 @@
 <template>
     <div :class="{ hidden: hidden }" class="pagination-container">
         <el-pagination
-            size="default"
+            :size="size"
             :background="background"
             v-model:current-page="currentPage"
             v-model:page-size="pageSize"
@@ -57,6 +57,10 @@ const props = defineProps({
     hidden: {
         type: Boolean,
         default: false,
+    },
+    size: {
+        type: String as PropType<"" | "small" | "default" | "large">,
+        default: 'default',
     },
 });
 

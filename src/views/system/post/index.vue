@@ -35,16 +35,16 @@
         </el-row>
 
         <el-table v-loading="loading" :data="postList" border>
-            <el-table-column label="岗位编码" align="center" prop="postCode" width="180" />
             <el-table-column label="岗位名称" align="center" prop="postName" width="180" />
+            <el-table-column label="岗位编码" align="center" prop="postCode" width="180" />
             <el-table-column label="状态" align="center" prop="status" width="120">
                 <template #default="scope">
                     <el-tag type="info" v-if="scope.row.status" size="small">停用</el-tag>
                     <el-tag type="primary" v-else size="small">正常</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="备注" prop="remark" />
             <el-table-column label="岗位排序" align="center" prop="orderNum" width="120" />
+            <el-table-column label="备注" prop="remark" />
             <el-table-column label="操作" width="200" align="center" class-name="small-padding">
                 <template #default="scope">
                     <el-tooltip content="修改" placement="top">
@@ -112,7 +112,7 @@
 </template>
 
 <script setup lang="ts" name="Post">
-import { listPost, createPost, delPost, getPost, updatePost } from '@/api/system/post';
+import { listPost, createPost, delPost, updatePost } from '@/api/system/post';
 import type { SysPost, PostQueryParams } from '@/types/api/system/post';
 import modal from '@/plugins/modal';
 

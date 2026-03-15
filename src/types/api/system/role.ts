@@ -50,11 +50,3 @@ export interface SysRole extends BaseEntity {
     /** 状态（0正常 1停用） */
     status?: boolean;
 }
-
-/** 角色部门树响应 */
-export interface RoleDept {
-    /** 选中部门ID */
-    checkedKeys: number[];
-    /** 部门树列表 */
-    deptTree: SysDept[];
-}

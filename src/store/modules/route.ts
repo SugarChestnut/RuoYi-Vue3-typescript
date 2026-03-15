@@ -74,7 +74,7 @@ function filterChildren(menus?: SysMenu[], lateMenu: any = false): RouteRecordRa
                     title: menu.title,
                     fullPath: menu.fullPath,
                     isFrame: menu.isFrame,
-                    isCahce: menu.isCache,
+                    isCache: menu.isCache,
                     hiddern: menu.hidden,
                     permission: menu.permission,
                     icon: menu.icon,

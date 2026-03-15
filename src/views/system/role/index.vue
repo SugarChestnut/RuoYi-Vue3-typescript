@@ -168,10 +168,8 @@ import {
     createRole,
     changeRoleStatus,
     delRole,
-    getRole,
     listRole,
     updateRole,
-    deptTreeSelect,
     getRoleMenu,
     getRoleDept,
 } from '@/api/system/role';
@@ -274,7 +272,7 @@ function handleStatusChange(row: SysRole) {
 /** 分配用户 */
 function handleAuthUser(row: SysRole) {
     console.log(router.getRoutes());
-    router.push('/system/role-auth/user/' + row.roleId);
+    router.push('/system/role-auth/user/' + row.roleId + '/' + row.roleName);
 }
 
 /** 重置新增的表单以及其他数据  */
