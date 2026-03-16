@@ -62,3 +62,10 @@ export interface UploadFileResult extends Result {
     /** 原始文件名称 */
     originalFilename: string;
 }
+
+export interface Option<T = string | number | boolean> {
+    /** 选项值 */
+    value: T;
+    /** 选项标签 */
+    label: string;
+}

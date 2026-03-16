@@ -81,7 +81,7 @@
 import { authUser } from '@/api/system/role';
 import { listUser } from '@/api/system/user';
 import type { SysUser, AuthUserQueryParams } from '@/types/api/system/user';
-import type { SelectUserInstance } from '@/types/component/SelectUser';
+import type { SelectUserInstance } from '@/types/vue-instance';
 import modal from '@/plugins/modal';
 
 import type { TableInstance, FormInstance } from 'element-plus';

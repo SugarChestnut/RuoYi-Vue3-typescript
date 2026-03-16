@@ -30,6 +30,8 @@ export interface SysDept extends BaseEntity {
     status?: number;
 
     children?: SysDept[];
-    
+    /** 基础角色 */
+    roleArray?: number[];
+    /** 负责人 */
     leader?: string;
 }

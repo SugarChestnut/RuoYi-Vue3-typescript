@@ -83,21 +83,21 @@
             v-model:limit="queryParams.pageSize"
             @pagination="getList"
         />
-        <select-user ref="selectRef" :roleId="queryParams.roleId!" @ok="handleQuery" />
+        <select-user ref="selectUserRef" :roleId="queryParams.roleId!" @ok="handleQuery" />
     </div>
 </template>
 
-<script setup lang="ts" name="AuthUser">
-import selectUser from './selectUser.vue';
+<script setup lang="ts">
+import SelectUser from './SelectUser.vue';
 import { authUserCancel } from '@/api/system/role';
 import { listAuthUser } from '@/api/system/user';
 import type { SysUser, AuthUserQueryParams } from '@/types/api/system/user';
 import modal from '@/plugins/modal';
 
 import type { FormInstance } from 'element-plus';
-import type { SelectUserInstance } from '@/types/component/SelectUser';
+import type { SelectUserInstance } from '@/types/vue-instance';
 const queryRef = useTemplateRef<FormInstance>('queryRef');
-const selectRef = useTemplateRef<SelectUserInstance>('selectRef');
+const selectUserRef = useTemplateRef<SelectUserInstance>('selectUserRef');
 
 const route = useRoute();
 const userList = ref<SysUser[]>([]);
@@ -146,7 +146,7 @@ function handleSelectionChange(selection: SysUser[]) {
 
 /** 打开授权用户表弹窗 */
 function openSelectUser() {
-    selectRef.value!.show();
+    selectUserRef.value!.show();
 }
 
 /** 取消授权按钮操作 */

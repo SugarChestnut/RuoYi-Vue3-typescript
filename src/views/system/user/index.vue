@@ -692,8 +692,4 @@ onMounted(() => {
     //     initPassword.value = response.msg;
     // });
 });
-
-defineOptions({
-    name: 'User',
-});
 </script>
