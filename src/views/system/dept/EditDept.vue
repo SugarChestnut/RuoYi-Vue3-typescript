@@ -67,21 +67,20 @@
                     <el-col :span="24">
                         <el-form-item label="基础角色" prop="roleIds">
                             <el-select
-                                v-model="form.roleIds"
+                                v-model="form.roleArray"
                                 multiple
                                 filterable
                                 remote
                                 reserve-keyword
                                 placeholder="Please enter a keyword"
-                                :remote-method="remoteMethod"
-                                :loading="loading"
-                                style="width: 240px"
+                                :remote-method="handleRoleSelect"
+                                :loading="roleLoading"
                             >
                                 <el-option
-                                    v-for="item in options"
-                                    :key="item.value"
-                                    :label="item.label"
-                                    :value="item.value"
+                                    v-for="role in roleOptions"
+                                    :key="role.roleId!"
+                                    :label="role.roleName"
+                                    :value="role.roleId!"
                                 />
                             </el-select>
                         </el-form-item>
@@ -106,8 +105,9 @@
 <script setup lang="ts" name="Dept">
 import { createDept, updateDept, listDept } from '@/api/system/dept';
 import { listUser } from '@/api/system/user';
+import { listRole } from '@/api/system/role';
 
-import type { SysDept, SysUser } from '@/types';
+import type { SysDept, SysRole, SysUser } from '@/types';
 import type { BaseInstance } from '@/types/vue-instance';
 import type { FormInstance } from 'element-plus';
 
@@ -123,9 +123,11 @@ const emit = defineEmits(['ok']);
 const deptRef = useTemplateRef<FormInstance>('deptRef');
 const visible = ref<boolean>(false);
 const loading = ref<boolean>(false);
+const roleLoading = ref<boolean>(false);
 const title = ref<string>('');
 const deptOptions = ref<SysDept[]>([]);
 const userOptions = ref<SysUser[]>([]);
+const roleOptions = ref<SysRole[]>([]);
 
 const data = reactive({
     form: {} as SysDept,
@@ -153,6 +155,7 @@ watch(
                 phone: newDept.phone,
                 email: newDept.email,
                 status: newDept.status,
+                roleArray: newDept.roleArray,
             };
         } else {
             // 新增模式：重置表单
@@ -201,25 +204,38 @@ function getTreeselect(depts: SysDept[]) {
     return depts.filter((dept) => dept.deptId !== form.value.deptId);
 }
 
+function handleRoleSelect(query: string) {
+    roleLoading.value = true;
+    listRole({ roleName: query, pageNum: 1, pageSize: 10 })
+        .then((res) => {
+            roleLoading.value = false;
+            roleOptions.value = res.data.records || [];
+        })
+        .catch(() => {
+            roleLoading.value = false;
+        });
+}
+
 /** 提交按钮 */
 function submitForm() {
-    deptRef.value!.validate((valid: boolean) => {
-        if (valid) {
-            if (form.value.deptId != undefined) {
-                updateDept(form.value).then(() => {
-                    modal.msgSuccess('修改成功');
-                    visible.value = false;
-                    emit('ok');
-                });
-            } else {
-                createDept(form.value).then(() => {
-                    modal.msgSuccess('新增成功');
-                    visible.value = false;
-                    emit('ok');
-                });
-            }
-        }
-    });
+    console.log(form.value);
+    // deptRef.value!.validate((valid: boolean) => {
+    //     if (valid) {
+    //         if (form.value.deptId != undefined) {
+    //             updateDept(form.value).then(() => {
+    //                 modal.msgSuccess('修改成功');
+    //                 visible.value = false;
+    //                 emit('ok');
+    //             });
+    //         } else {
+    //             createDept(form.value).then(() => {
+    //                 modal.msgSuccess('新增成功');
+    //                 visible.value = false;
+    //                 emit('ok');
+    //             });
+    //         }
+    //     }
+    // });
 }
 
 function show() {
