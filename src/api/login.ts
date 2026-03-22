@@ -15,6 +15,7 @@ export function login(username: string, password: string, code?: string, uuid?: 
             isToken: false,
             repeatSubmit: false,
         },
+        withCredentials: true,
         method: 'post',
         data: data,
     });

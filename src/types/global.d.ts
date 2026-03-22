@@ -7,8 +7,10 @@ declare module '*.vue' {
 
 // element-plus
 // declare module 'element-plus';
+
 // axios
-declare module 'axios';
+// declare module 'axios';
+
 // vue-quill
 declare module '@vueup/vue-quill';
 

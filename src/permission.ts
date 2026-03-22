@@ -2,7 +2,7 @@ import router from './router';
 import { ElMessage } from 'element-plus';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import { getToken } from '@/utils/auth';
+import { getAccessToken } from '@/utils/auth';
 import { isHttp, isPathMatch } from '@/utils/validate';
 import { isRelogin } from '@/utils/request';
 import useUserStore from '@/store/modules/user';
@@ -21,7 +21,7 @@ const isWhiteList = (path: string): boolean => {
 
 router.beforeEach((to, from, next) => {
     NProgress.start();
-    if (getToken()) {
+    if (getAccessToken()) {
         to.meta.title && useSettingsStore().setTitle(to.meta.title as string);
         /* has token*/
         if (to.path === '/login') {

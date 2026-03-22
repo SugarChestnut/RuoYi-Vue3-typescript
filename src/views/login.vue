@@ -122,6 +122,7 @@ function handleLogin(): void {
                     const redirect = route.query?.redirect as string;
                     const redirectUrl = redirect ? decodeURIComponent(redirect) : '';
                     router.push({ path: redirectUrl || '/', query: otherQueryParams });
+                    loading.value = false;
                 })
                 .catch((e) => {
                     loading.value = false;

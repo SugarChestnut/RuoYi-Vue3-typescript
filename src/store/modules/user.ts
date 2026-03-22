@@ -1,12 +1,12 @@
 import router from '@/router';
 import { ElMessageBox } from 'element-plus';
 import { login, logout, getInfo } from '@/api/login';
-import { getToken, setToken, removeToken } from '@/utils/auth';
+import { setAccessToken, removeToken } from '@/utils/auth';
 import { isHttp, isEmpty } from '@/utils/validate';
 import defAva from '@/assets/images/profile.jpg';
 
 interface UserState {
-    token: string | undefined;
+    token?: string;
     id: string | number;
     name: string;
     avatar: string;
@@ -16,7 +16,7 @@ interface UserState {
 
 const useUserStore = defineStore('user', {
     state: (): UserState => ({
-        token: getToken(),
+        token: '',
         id: '',
         name: '',
         avatar: '',
@@ -34,7 +34,7 @@ const useUserStore = defineStore('user', {
                 login(username, password, code, uuid)
                     .then((res) => {
                         if (res.flag) {
-                            setToken(res.data);
+                            setAccessToken(res.data);
                             this.token = res.data;
                             resolve();
                         } else {

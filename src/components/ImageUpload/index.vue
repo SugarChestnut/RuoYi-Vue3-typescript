@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { getToken } from "@/utils/auth"
+import { getAccessToken } from "@/utils/auth"
 import { isExternal } from "@/utils/validate"
 import Sortable from 'sortablejs'
 import type { UploadFileResult } from '@/types/api/common'
@@ -110,7 +110,7 @@ const dialogImageUrl = ref("")
 const dialogVisible = ref(false)
 const baseUrl = import.meta.env.VITE_APP_BASE_API
 const uploadImgUrl = ref(import.meta.env.VITE_APP_BASE_API + props.action)
-const headers = ref({ Authorization: "Bearer " + getToken() })
+const headers = ref({ Authorization: getAccessToken() })
 const fileList = ref<UploadImageItem[]>([])
 const showTip = computed(
   () => props.isShowTip && (props.fileType || props.fileSize)

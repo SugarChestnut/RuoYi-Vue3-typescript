@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ElLoading, ElMessage } from 'element-plus';
 import { saveAs } from 'file-saver';
-import { getToken } from '@/utils/auth';
+import { getAccessToken } from '@/utils/auth';
 import { blobValidate } from '@/utils/ruoyi';
 
 const baseURL = import.meta.env.VITE_APP_BASE_API;
@@ -14,7 +14,7 @@ export default {
             method: 'get',
             url: url,
             responseType: 'blob',
-            headers: { Authorization: 'Bearer ' + getToken() },
+            headers: { Authorization: getAccessToken() },
         }).then((res: any) => {
             const isBlob = blobValidate(res.data);
             if (isBlob) {
@@ -31,7 +31,7 @@ export default {
             method: 'get',
             url: url,
             responseType: 'blob',
-            headers: { Authorization: 'Bearer ' + getToken() },
+            headers: { Authorization: getAccessToken() },
         }).then((res: any) => {
             const isBlob = blobValidate(res.data);
             if (isBlob) {
@@ -49,7 +49,7 @@ export default {
             method: 'get',
             url: downloadUrl,
             responseType: 'blob',
-            headers: { Authorization: 'Bearer ' + getToken() },
+            headers: { Authorization: getAccessToken() },
         })
             .then((res: any) => {
                 const isBlob = blobValidate(res.data);

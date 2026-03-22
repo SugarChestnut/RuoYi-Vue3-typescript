@@ -56,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { getToken } from '@/utils/auth';
+import { getAccessToken } from '@/utils/auth';
 import Sortable from 'sortablejs';
 import type { UploadFileResult } from '@/types/api/common';
 import { ElUpload } from 'element-plus';
@@ -119,7 +119,7 @@ const number = ref(0);
 const uploadList = ref<UploadFileItem[]>([]);
 const baseUrl = import.meta.env.VITE_APP_BASE_API;
 const uploadFileUrl = ref(import.meta.env.VITE_APP_BASE_API + props.action); // 上传文件服务器地址
-const headers = ref({ Authorization: 'Bearer ' + getToken() });
+const headers = ref({ Authorization: getAccessToken() });
 const fileList = ref<UploadFileItem[]>([]);
 const showTip = computed(() => props.isShowTip && (props.fileType || props.fileSize));
 

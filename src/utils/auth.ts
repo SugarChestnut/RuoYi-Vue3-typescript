@@ -1,17 +1,16 @@
 import Cookies from 'js-cookie';
 
-const TokenKey = 'Admin-Token';
+const accessToken = 'Access-Token';
 
-export function getToken(): string | undefined {
-    const token = Cookies.get(TokenKey);
+export function getAccessToken(): string | undefined {
+    const token = Cookies.get(accessToken);
     if (token && 'undefined' === token) return undefined;
     return token;
 }
-
-export function setToken(token: string): string | undefined {
-    return Cookies.set(TokenKey, token);
+export function setAccessToken(token: string): string | undefined {
+    return Cookies.set(accessToken, token);
 }
 
 export function removeToken(): void {
-    Cookies.remove(TokenKey);
+    Cookies.remove(accessToken);
 }
