@@ -179,12 +179,7 @@
 
                     <el-form-item prop="code" v-if="captchaEnabled">
                         <div class="code-row">
-                            <el-input
-                                v-model="loginForm.code"
-                                size="large"
-                                placeholder="验证码"
-                                class="code-input"
-                            />
+                            <el-input v-model="loginForm.code" size="large" placeholder="验证码" class="code-input" />
                             <div class="login-code">
                                 <img :src="codeUrl" @click="getCode" class="login-code-img" />
                             </div>
@@ -231,7 +226,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { getCodeImg } from '@/api/login';
+import { getCodeImg } from '@/api/auth';
 import useUserStore from '@/store/modules/user';
 import { Star, View, Hide } from '@element-plus/icons-vue';
 import type { LoginForm } from '@/types/api/login';
@@ -582,8 +577,7 @@ function handleLogin(): void {
     });
 }
 
-function handleGoogleLogin(): void {
-}
+function handleGoogleLogin(): void {}
 
 function getCode(): void {
     getCodeImg().then((res) => {
@@ -683,7 +677,7 @@ function getCode(): void {
     height: 4px;
     background: #2d2d2d;
     border-radius: 2px;
-    transition: all 0.5s ease-out;
+    transition: all 0.6s ease-out;
 }
 
 .footer-links {
@@ -740,7 +734,7 @@ function getCode(): void {
     align-items: center;
     justify-content: center;
     padding: 32px;
-    background: white;
+    background: oklch(100% 0 0);
 }
 
 .login-box {
@@ -943,5 +937,4 @@ function getCode(): void {
         display: flex;
     }
 }
-
 </style>

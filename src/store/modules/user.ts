@@ -1,8 +1,7 @@
 import router from '@/router';
 import { ElMessageBox } from 'element-plus';
-import { login, logout, getInfo } from '@/api/login';
+import { login, logout, getInfo, refresh } from '@/api/auth';
 import { setAccessToken, removeToken } from '@/utils/auth';
-import { isHttp, isEmpty } from '@/utils/validate';
 import defAva from '@/assets/images/profile.jpg';
 
 interface UserState {
@@ -113,6 +112,7 @@ const useUserStore = defineStore('user', {
                     });
             });
         },
+        refresh() {},
     },
 });
 

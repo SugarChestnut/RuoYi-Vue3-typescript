@@ -4,12 +4,9 @@ import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import { getAccessToken } from '@/utils/auth';
 import { isHttp, isPathMatch } from '@/utils/validate';
-import { isRelogin } from '@/utils/request';
 import useUserStore from '@/store/modules/user';
 import useSettingsStore from '@/store/modules/settings';
 import useRouteStore from '@/store/modules/route';
-import Layout from '@/layout/index.vue';
-import User from '@/views/system/user/index.vue';
 
 NProgress.configure({ showSpinner: false });
 
@@ -31,7 +28,6 @@ router.beforeEach((to, from, next) => {
             next();
         } else {
             if (useUserStore().roles.length === 0) {
-                isRelogin.show = true;
                 // 判断当前用户是否已拉取完user_info信息
                 useUserStore()
                     .getInfo()
@@ -39,7 +35,6 @@ router.beforeEach((to, from, next) => {
                         if (useUserStore().roles.length === 0) {
                             next('/error?msg=当前用户未分配权限，请联系管理员');
                         } else {
-                            isRelogin.show = false;
                             useRouteStore()
                                 .generateRoutes()
                                 .then(() => {

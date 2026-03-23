@@ -57,6 +57,13 @@ export function getCodeImg(): Promise<Result<CaptchaInfoResult>> {
             isToken: false,
         },
         method: 'get',
-        timeout: 20000,
+    });
+}
+
+export function refresh() {
+    return request({
+        url: '/refresh',
+        method: 'get',
+        withCredentials: true,
     });
 }
