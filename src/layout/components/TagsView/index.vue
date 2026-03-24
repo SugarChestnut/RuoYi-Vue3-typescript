@@ -1,34 +1,48 @@
 <template>
     <div id="tags-view-container" class="tags-view-container">
         <scroll-pane ref="scrollPaneRef" class="tags-view-wrapper" @scroll="handleScroll">
-            <router-link
+            <el-dropdown
+                placement="bottom-start"
+                trigger="contextmenu"
                 v-for="tag in visitedTags"
                 :key="tag.name"
-                :data-path="tag.path"
-                :class="{ active: isActive(tag), 'has-icon': tagsIcon }"
-                :to="{ path: tag.meta.fullPath!, query: tag.meta.query }"
-                class="tags-view-item"
-                :style="activeStyle(tag)"
-                @click.middle="!isAffix(tag) ? closeSelectedTag(tag) : ''"
-                @contextmenu.prevent="openMenu(tag, $event)"
                 :ref="
                     (el) => {
                         if (el) tagsRefs[tag.name!] = el;
                     }
                 "
+                @contextmenu="openMenu(tag, $event)"
             >
-                <svg-icon
-                    v-if="tagsIcon && tag.meta && tag.meta.icon && tag.meta.icon !== '#'"
-                    :icon-class="tag.meta.icon"
-                />
-                {{ tag.meta.title || tag.name }}
-                <span v-if="!isAffix(tag)" @click.prevent.stop="closeSelectedTag(tag)">
-                    <close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: -2px;" />
-                </span>
-            </router-link>
+                <router-link
+                    :data-path="tag.path"
+                    :class="{ active: isActive(tag), 'has-icon': tagsIcon }"
+                    :to="{ path: tag.meta.fullPath!, query: tag.meta.query }"
+                    class="tags-view-item"
+                    :style="activeStyle(tag)"
+                >
+                    <svg-icon
+                        v-if="tagsIcon && tag.meta && tag.meta.icon && tag.meta.icon !== '#'"
+                        :icon-class="tag.meta.icon"
+                    />
+                    {{ tag.meta.title || tag.name }}
+                    <span v-if="!isAffix(tag)" @click.prevent.stop="closeSelectedTag(tag)">
+                        <close class="el-icon-close" style="width: 1em; height: 1em; vertical-align: -2px" />
+                    </span>
+                </router-link>
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item icon="Refresh">刷新页面</el-dropdown-item>
+                        <el-dropdown-item icon="Close" v-if="!isAffix(selectedTag)">关闭页面</el-dropdown-item>
+                        <el-dropdown-item icon="Remove">关闭其他</el-dropdown-item>
+                        <el-dropdown-item icon="Back" v-if="!isFirstView()">关闭左侧</el-dropdown-item>
+                        <el-dropdown-item icon="Right" v-if="!isLastView()">关闭右侧</el-dropdown-item>
+                        <el-dropdown-item icon="CircleClose">全部关闭</el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
         </scroll-pane>
 
-        <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
+        <!-- <ul v-show="visible" :style="{ left: left + 'px', top: top + 'px' }" class="contextmenu">
             <li @click="refreshSelectedTag(selectedTag)"><refresh-right style="width: 1em; height: 1em" /> 刷新页面</li>
             <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">
                 <close style="width: 1em; height: 1em" /> 关闭当前
@@ -37,7 +51,7 @@
             <li v-if="!isFirstView()" @click="closeLeftTags"><back style="width: 1em; height: 1em" /> 关闭左侧</li>
             <li v-if="!isLastView()" @click="closeRightTags"><right style="width: 1em; height: 1em" /> 关闭右侧</li>
             <li @click="closeAllTags(selectedTag)"><circle-close style="width: 1em; height: 1em" /> 全部关闭</li>
-        </ul>
+        </ul> -->
     </div>
 </template>
 
@@ -51,6 +65,7 @@ import tab from '@/plugins/tab';
 import type { RouteRecordRaw } from 'vue-router';
 
 import type { ScrollPaneInstance } from '@/types';
+import { Refresh } from '@element-plus/icons-vue';
 const scrollPaneRef = useTemplateRef<ScrollPaneInstance>('scrollPaneRef');
 
 const tagsRefs = ref<any>({});
@@ -232,21 +247,17 @@ function toLastTag(visitedTags: Tag[], tag?: any): void {
         }
     }
 }
-
+const currentClickTag = ref<any>(null);
 function openMenu(tag: any, e: MouseEvent): void {
-    const el = tagsRefs.value[tag.name].$el as HTMLElement;
-    
-    const offsetLeft = el.getBoundingClientRect().left; // container margin left
-    const l = offsetLeft + 15; // 15: margin right
-
-    const menuMinWidth = 0;
-    const maxLeft = el.offsetWidth - menuMinWidth; // left boundary
-
-    console.log(l, maxLeft);
-    left.value = Math.min(l, maxLeft);
-    top.value = e.clientY + 3;
-    visible.value = true;
-    selectedTag.value = tag;
+    if (currentClickTag.value && currentClickTag.value.name === tag.name) {
+        return;
+    }
+    if (currentClickTag.value) {
+        tagsRefs.value[currentClickTag.value.name].handleClose();
+    }
+    currentClickTag.value = tag;
+    tagsRefs.value[currentClickTag.value.name].handleOpen();
+    selectedTag.value = currentClickTag.value;
 }
 
 function closeMenu(): void {
@@ -282,14 +293,6 @@ function handleScroll(): void {
             font-size: 12px;
             margin-left: 5px;
             margin-top: 4px;
-
-            &:first-of-type {
-                margin-left: 15px;
-            }
-
-            &:last-of-type {
-                margin-right: 15px;
-            }
 
             &.active {
                 background-color: #42b983;

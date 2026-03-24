@@ -568,10 +568,7 @@ function handleLogin(): void {
                 })
                 .catch((e) => {
                     loading.value = false;
-                    error.value = e;
-                    if (captchaEnabled.value) {
-                        getCode();
-                    }
+                    error.value = e.message;
                 });
         }
     });
