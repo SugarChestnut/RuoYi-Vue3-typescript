@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/http/request'
 import type { OperlogQueryParams, SysOperLog, AjaxResult, TableDataInfo } from '@/types'
 
 // 查询操作日志列表

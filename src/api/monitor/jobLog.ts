@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/http/request'
 import type { JobLogQueryParams, SysJobLog, AjaxResult, TableDataInfo } from '@/types'
 
 // 查询调度日志列表

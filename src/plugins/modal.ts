@@ -7,10 +7,6 @@ export default {
     msg(content: string) {
         ElMessage.info(content);
     },
-    // 错误消息
-    msgError(content: string) {
-        ElMessage.error(content);
-    },
     // 成功消息
     msgSuccess(content: string) {
         ElMessage.success(content);
@@ -19,13 +15,17 @@ export default {
     msgWarning(content: string) {
         ElMessage.warning(content);
     },
+    // 错误消息
+    msgError(err?: any, content?: string) {
+        if (err?.isCancel) {
+            return;
+        }
+        ElMessage.error(content || err.message);
+    },
+
     // 弹出提示
     alert(content: string) {
         ElMessageBox.alert(content, '系统提示');
-    },
-    // 错误提示
-    alertError(content: string) {
-        ElMessageBox.alert(content, '系统提示', { type: 'error' });
     },
     // 成功提示
     alertSuccess(content: string) {
@@ -35,13 +35,17 @@ export default {
     alertWarning(content: string) {
         ElMessageBox.alert(content, '系统提示', { type: 'warning' });
     },
+    // 错误提示
+    alertError(err?: any, content?: string) {
+        if (err?.isCancel) {
+            return;
+        }
+        ElMessageBox.alert(content || err.message, '系统提示', { type: 'error' });
+    },
+
     // 通知提示
     notify(content: string) {
         ElNotification.info(content);
-    },
-    // 错误通知
-    notifyError(content: string) {
-        ElNotification.error(content);
     },
     // 成功通知
     notifySuccess(content: string) {
@@ -51,6 +55,14 @@ export default {
     notifyWarning(content: string) {
         ElNotification.warning(content);
     },
+    // 错误通知
+    notifyError(err?: any, content?: string) {
+        if (err?.isCancel) {
+            return;
+        }
+        ElNotification.error(content || err.message);
+    },
+
     // 确认窗体
     confirm(content: string) {
         return ElMessageBox.confirm(content, '系统提示', {

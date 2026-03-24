@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/http/request'
 import type { AjaxResult } from '@/types'
 
 // 获取服务信息

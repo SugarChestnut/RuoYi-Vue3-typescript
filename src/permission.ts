@@ -3,7 +3,7 @@ import { ElMessage } from 'element-plus';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import { getAccessToken } from '@/utils/auth';
-import { isHttp, isPathMatch } from '@/utils/validate';
+import { isPathMatch } from '@/utils/validate';
 import useUserStore from '@/store/modules/user';
 import useSettingsStore from '@/store/modules/settings';
 import useRouteStore from '@/store/modules/route';

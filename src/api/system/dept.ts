@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/utils/http/request';
 import type { DeptQueryParams, SysDept, Result } from '@/types';
 
 // 查询部门列表

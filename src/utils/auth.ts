@@ -11,6 +11,6 @@ export function setAccessToken(token: string): string | undefined {
     return Cookies.set(accessToken, token);
 }
 
-export function removeToken(): void {
+export function removeAccessToken(): void {
     Cookies.remove(accessToken);
 }

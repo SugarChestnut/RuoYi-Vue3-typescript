@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/http/request'
 import type { LogininforQueryParams, SysLogininfor, AjaxResult, TableDataInfo } from '@/types'
 
 // 查询登录日志列表

@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/http/request'
 import type { NoticeQueryParams, SysNotice, AjaxResult, TableDataInfo } from '@/types'
 
 // 查询公告列表

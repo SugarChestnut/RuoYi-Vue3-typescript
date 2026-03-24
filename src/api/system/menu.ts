@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/utils/http/request';
 import type { MenuQueryParams, SysMenu, Result } from '@/types';
 
 // 新增菜单

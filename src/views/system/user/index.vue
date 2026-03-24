@@ -337,7 +337,7 @@ import type { SysRole } from '@/types/api/system/role';
 import type { SysPost } from '@/types/api/system/post';
 import type { Result } from '@/types/api/common';
 import modal from '@/plugins/modal';
-import { download } from '@/utils/request';
+import { download } from '@/utils/http/request';
 import { validateEmail } from '@/utils/email';
 
 const router = useRouter();

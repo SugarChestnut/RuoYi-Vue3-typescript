@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/utils/http/request';
 import type { SysRegister, UserInfoResult, CaptchaInfoResult, Result } from '@/types';
 
 // 登录方法
@@ -60,9 +60,12 @@ export function getCodeImg(): Promise<Result<CaptchaInfoResult>> {
     });
 }
 
-export function refresh() {
+export function refresh(): Promise<Result<string>> {
     return request({
         url: '/refresh',
+        headers: {
+            isToken: false,
+        },
         method: 'get',
         withCredentials: true,
     });

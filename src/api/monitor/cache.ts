@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/http/request'
 import type { SysCache, AjaxResult } from '@/types'
 
 // 查询缓存详细

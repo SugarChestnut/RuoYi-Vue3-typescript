@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/http/request'
 import type { ConfigQueryParams, SysConfig, AjaxResult, TableDataInfo } from '@/types'
 
 // 查询参数列表

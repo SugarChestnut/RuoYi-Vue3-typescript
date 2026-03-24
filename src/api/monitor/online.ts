@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/http/request'
 import type { OnlineQueryParams, SysUserOnline, AjaxResult, TableDataInfo } from '@/types'
 
 // 查询在线用户列表

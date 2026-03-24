@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/utils/http/request';
 import type { PostQueryParams, SysPost, Result, SysPage } from '@/types';
 
 // 查询岗位列表

@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/utils/http/request';
 import { parseStrEmpty } from '@/utils/ruoyi';
 import type {
     UserQueryParams,

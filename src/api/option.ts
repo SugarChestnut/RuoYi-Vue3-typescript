@@ -1,4 +1,4 @@
-import request from '@/utils/request';
+import request from '@/utils/http/request';
 import type { Option, Result } from '@/types';
 
 export function getDataScope<T>(): Promise<Result<Option<T>[]>> {

@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/http/request'
 import type { GenQueryParams, GenTable, GenTableInfoResult, AjaxResult, TableDataInfo } from '@/types'
 
 // 查询生成表数据

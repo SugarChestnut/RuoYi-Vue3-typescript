@@ -1,7 +1,7 @@
 import router from '@/router';
 import { ElMessageBox } from 'element-plus';
 import { login, logout, getInfo, refresh } from '@/api/auth';
-import { setAccessToken, removeToken } from '@/utils/auth';
+import { setAccessToken, removeAccessToken } from '@/utils/auth';
 import defAva from '@/assets/images/profile.jpg';
 
 interface UserState {
@@ -104,7 +104,7 @@ const useUserStore = defineStore('user', {
                         this.token = '';
                         this.roles = [];
                         this.permissions = [];
-                        removeToken();
+                        removeAccessToken();
                         resolve();
                     })
                     .catch((error: any) => {
@@ -112,7 +112,19 @@ const useUserStore = defineStore('user', {
                     });
             });
         },
-        refresh() {},
+        refresh() {
+            return new Promise<void>((resolve, reject) => {
+                refresh().then((res) => {
+                    if (res.flag) {
+                        setAccessToken(res.data);
+                        this.token = res.data;
+                        resolve();
+                    } else {
+                        reject(res.msg);
+                    }
+                });
+            });
+        },
     },
 });
 
