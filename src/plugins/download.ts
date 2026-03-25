@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { ElLoading, ElMessage } from 'element-plus';
 import { saveAs } from 'file-saver';
-import { getAccessToken } from '@/utils/auth';
+import { getAccessToken } from '@/utils/token';
 import { blobValidate } from '@/utils/ruoyi';
 
 const baseURL = import.meta.env.VITE_APP_BASE_API;

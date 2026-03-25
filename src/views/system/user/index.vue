@@ -326,7 +326,7 @@
 </template>
 
 <script setup lang="ts" name="User">
-import { getToken } from '@/utils/auth';
+import { getToken } from '@/utils/token';
 import useAppStore from '@/store/modules/app';
 import { listUser, resetUserPwd, delUser, getUser, updateUser, addUser } from '@/api/system/user';
 import { Splitpanes, Pane } from 'splitpanes';

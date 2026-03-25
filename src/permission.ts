@@ -2,7 +2,7 @@ import router from './router';
 import { ElMessage } from 'element-plus';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import { getAccessToken } from '@/utils/auth';
+import { getAccessToken } from '@/utils/token';
 import { isPathMatch } from '@/utils/validate';
 import useUserStore from '@/store/modules/user';
 import useSettingsStore from '@/store/modules/settings';
@@ -18,6 +18,9 @@ const isWhiteList = (path: string): boolean => {
 
 router.beforeEach((to, from, next) => {
     NProgress.start();
+    if (!getAccessToken()) {
+        useUserStore().refresh();
+    }
     if (getAccessToken()) {
         to.meta.title && useSettingsStore().setTitle(to.meta.title as string);
         /* has token*/
@@ -43,12 +46,12 @@ router.beforeEach((to, from, next) => {
                         }
                     })
                     .catch((err: any) => {
-                        useUserStore()
-                            .logOut()
-                            .then(() => {
-                                ElMessage.error(err as string);
-                                next({ path: '/' });
-                            });
+                        // useUserStore()
+                        //     .logOut()
+                        //     .then(() => {
+                        //         ElMessage.error(err as string);
+                        //         next({ path: '/' });
+                        //     });
                     });
             } else {
                 next();

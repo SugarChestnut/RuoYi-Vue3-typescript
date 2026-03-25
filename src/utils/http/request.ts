@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { getAccessToken } from '@/utils/auth';
+import { getAccessToken, removeAccessToken } from '@/utils/token';
 import useUserStore from '@/store/modules/user';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
 import { addPending, removePending, getKey } from './dedupe';
+import router from '@/router';
 
 let refreshLock = false;
 let paddingRequests: {
@@ -16,6 +17,7 @@ function flushQueue(error?: any) {
         if (error) {
             reject(error);
         } else {
+            config.headers!['Authorization'] = getAccessToken();
             resolve(service(config));
         }
     });
@@ -25,9 +27,9 @@ function flushQueue(error?: any) {
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8';
 // 创建axios实例
 const service = axios.create({
-    // axios中请求配置有baseURL选项，表示请求URL公共部分
-    baseURL: import.meta.env.VITE_APP_BASE_API,
-    // 超时
+    // axios 请求基础URL, 开启代理时需要配置代理前缀,否则直接配置后端接口地址
+    baseURL: import.meta.env.VITE_IS_REQUEST_PROXY ? import.meta.env.VITE_API_PREFIX : import.meta.env.VITE_API_URL,
+    // 超时时间
     timeout: 30000,
 });
 
@@ -38,8 +40,7 @@ service.interceptors.request.use(
         const isToken = (config.headers || {}).isToken === false;
         // 是否需要防止数据重复提交
         const isRepeatSubmit = (config.headers || {}).repeatSubmit === false;
-        // 间隔时间(ms)，小于此时间视为重复提交
-        const interval = (config.headers || {}).interval || 1000;
+
         if (getAccessToken() && !isToken) {
             config.headers['Authorization'] = getAccessToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
         }
@@ -66,6 +67,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (res) => {
         removePending(res.config);
+        console.log(res);
         const code = res.data.code || 200;
         const msg = res.data.msg;
         // 二进制数据则直接返回
@@ -90,10 +92,13 @@ service.interceptors.response.use(
         }
         if (error.status === 401) {
             const originalRequest = error.config as AxiosRequestConfig & {
-                _retry?: boolean;
+                _retry: boolean;
             };
-            if (originalRequest._retry) {
-                location.href = '/login';
+            if (originalRequest.url === '/refresh' || originalRequest._retry) {
+                console.log(1);
+                removeAccessToken();
+                // location.href = '/login';
+                // router.push({ path: 'login'});
                 return Promise.reject('登录状态已过期,请重新登录!');
             }
             originalRequest._retry = true;
@@ -109,8 +114,8 @@ service.interceptors.response.use(
             refreshLock = true;
             try {
                 await useUserStore().refresh();
-                refreshLock = false;
                 flushQueue();
+                originalRequest.headers!['Authorization'] = getAccessToken();
                 return service(originalRequest);
             } catch (error) {
                 flushQueue('登录状态已过期,请重新登录!');

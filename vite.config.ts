@@ -4,9 +4,10 @@ import createVitePlugins from './vite/plugins';
 
 export default defineConfig(({ mode, command }) => {
     const env = loadEnv(mode, process.cwd());
-    const { VITE_BASE_URL, VITE_API_API_PREFIX, VITE_APP_BASE_API } = env;
+    const { VITE_BASE_URI, VITE_API_PREFIX, VITE_API_URL } = env;
+    console.log(VITE_API_PREFIX, VITE_API_URL);
     return {
-        base: VITE_BASE_URL,
+        base: VITE_BASE_URI,
         plugins: createVitePlugins(env, command === 'build'),
         resolve: {
             alias: {
@@ -37,11 +38,11 @@ export default defineConfig(({ mode, command }) => {
             host: true,
             open: true,
             proxy: {
-                [VITE_API_API_PREFIX]: {
-                    target: VITE_APP_BASE_API,
+                [VITE_API_PREFIX]: {
+                    target: VITE_API_URL,
                     changeOrigin: true,
-                    rewrite: (p) => p.replace(new RegExp(`^${VITE_API_API_PREFIX}`), ''),
-                },
+                    rewrite: (p) => p.replace(new RegExp(`^${VITE_API_PREFIX}`), ''),
+                }
             },
         },
         css: {

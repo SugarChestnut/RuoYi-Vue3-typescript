@@ -1,7 +1,7 @@
 import router from '@/router';
 import { ElMessageBox } from 'element-plus';
 import { login, logout, getInfo, refresh } from '@/api/auth';
-import { setAccessToken, removeAccessToken } from '@/utils/auth';
+import { setAccessToken, removeAccessToken } from '@/utils/token';
 import defAva from '@/assets/images/profile.jpg';
 
 interface UserState {
@@ -116,6 +116,7 @@ const useUserStore = defineStore('user', {
             return new Promise<void>((resolve, reject) => {
                 refresh().then((res) => {
                     if (res.flag) {
+                        console.log(res);
                         setAccessToken(res.data);
                         this.token = res.data;
                         resolve();

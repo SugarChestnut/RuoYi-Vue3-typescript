@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { getAccessToken } from "@/utils/auth"
+import { getAccessToken } from "@/utils/token"
 import { isExternal } from "@/utils/validate"
 import Sortable from 'sortablejs'
 import type { UploadFileResult } from '@/types/api/common'

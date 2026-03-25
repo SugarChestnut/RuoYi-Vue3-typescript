@@ -109,10 +109,14 @@ const { queryParams, dept } = toRefs(data);
 /** 查询部门列表 */
 function getList() {
     loading.value = true;
-    listDept(queryParams.value).then((res) => {
-        deptList.value = res.data;
-        loading.value = false;
-    });
+    listDept(queryParams.value)
+        .then((res) => {
+            deptList.value = res.data;
+            loading.value = false;
+        })
+        .finally(() => {
+            loading.value = false;
+        });
 }
 
 /** 搜索按钮操作 */

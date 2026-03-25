@@ -30,7 +30,7 @@
 import axios from 'axios'
 import { QuillEditor } from "@vueup/vue-quill"
 import "@vueup/vue-quill/dist/vue-quill.snow.css"
-import { getAccessToken } from "@/utils/auth"
+import { getAccessToken } from "@/utils/token"
 import type { UploadFileResult } from '@/types/api/common'
 
 const { proxy } = getCurrentInstance()
