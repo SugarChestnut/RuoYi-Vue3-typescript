@@ -7,6 +7,7 @@ import { isPathMatch } from '@/utils/validate';
 import useUserStore from '@/store/modules/user';
 import useSettingsStore from '@/store/modules/settings';
 import useRouteStore from '@/store/modules/route';
+import { tr } from 'element-plus/es/locales.mjs';
 
 NProgress.configure({ showSpinner: false });
 
@@ -16,59 +17,59 @@ const isWhiteList = (path: string): boolean => {
     return whiteList.some((pattern: string) => isPathMatch(pattern, path));
 };
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from) => {
     NProgress.start();
+    console.log(from, to);
     if (!getAccessToken()) {
-        useUserStore().refresh();
+        try {
+            console.log('刷新token');
+            await useUserStore().refresh();
+        } catch (error) {
+            console.log(error);
+            return { path: `/login?redirect=${to.fullPath}` };
+        }
     }
     if (getAccessToken()) {
         to.meta.title && useSettingsStore().setTitle(to.meta.title as string);
         /* has token*/
         if (to.path === '/login') {
-            next({ path: '/' });
-            NProgress.done();
+            return { path: '/' };
         } else if (isWhiteList(to.path)) {
-            next();
+            return { path: to.path };
         } else {
             if (useUserStore().roles.length === 0) {
                 // 判断当前用户是否已拉取完user_info信息
-                useUserStore()
-                    .getInfo()
-                    .then(() => {
-                        if (useUserStore().roles.length === 0) {
-                            next('/error?msg=当前用户未分配权限，请联系管理员');
-                        } else {
-                            useRouteStore()
-                                .generateRoutes()
-                                .then(() => {
-                                    next({ ...to, replace: true });
-                                });
-                        }
-                    })
-                    .catch((err: any) => {
-                        // useUserStore()
-                        //     .logOut()
-                        //     .then(() => {
-                        //         ElMessage.error(err as string);
-                        //         next({ path: '/' });
-                        //     });
-                    });
+                try {
+                    await useUserStore().getInfo();
+                    if (useUserStore().roles.length === 0) {
+                        return { path: '/error?msg=当前用户未分配权限，请联系管理员' };
+                    } else {
+                        await useRouteStore().generateRoutes();
+                        console.log(to);
+                        return { ...to, replace: true };
+                    }
+                } catch (err: any) {
+                    try {
+                        await useUserStore().logOut();
+                    } catch (error) {}
+                    return { path: '/login' };
+                }
             } else {
-                next();
+                return { path: to.path };
             }
         }
     } else {
         // 没有token
         if (isWhiteList(to.path)) {
             // 在免登录白名单，直接进入
-            next();
+            return { path: to.path };
         } else {
-            next(`/login?redirect=${to.fullPath}`); // 否则全部重定向到登录页
-            NProgress.done();
+            return { path: `/login?redirect=${to.fullPath}` }; // 否则全部重定向到登录页
         }
     }
 });
 
 router.afterEach(() => {
+    console.log('afterEach');
     NProgress.done();
 });

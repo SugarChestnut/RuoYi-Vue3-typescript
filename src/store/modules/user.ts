@@ -114,16 +114,19 @@ const useUserStore = defineStore('user', {
         },
         refresh() {
             return new Promise<void>((resolve, reject) => {
-                refresh().then((res) => {
-                    if (res.flag) {
-                        console.log(res);
-                        setAccessToken(res.data);
-                        this.token = res.data;
-                        resolve();
-                    } else {
-                        reject(res.msg);
-                    }
-                });
+                refresh()
+                    .then((res) => {
+                        if (res.flag) {
+                            setAccessToken(res.data);
+                            this.token = res.data;
+                            resolve();
+                        } else {
+                            reject(res.msg);
+                        }
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
             });
         },
     },

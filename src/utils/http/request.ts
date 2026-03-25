@@ -3,7 +3,6 @@ import { getAccessToken, removeAccessToken } from '@/utils/token';
 import useUserStore from '@/store/modules/user';
 import type { AxiosError, AxiosRequestConfig } from 'axios';
 import { addPending, removePending, getKey } from './dedupe';
-import router from '@/router';
 
 let refreshLock = false;
 let paddingRequests: {
@@ -67,7 +66,6 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (res) => {
         removePending(res.config);
-        console.log(res);
         const code = res.data.code || 200;
         const msg = res.data.msg;
         // 二进制数据则直接返回
@@ -98,7 +96,6 @@ service.interceptors.response.use(
                 console.log(1);
                 removeAccessToken();
                 // location.href = '/login';
-                // router.push({ path: 'login'});
                 return Promise.reject('登录状态已过期,请重新登录!');
             }
             originalRequest._retry = true;
